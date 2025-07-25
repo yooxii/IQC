@@ -1,4 +1,4 @@
-from template_ui import *
+from template import *
 
 from PySide6.QtWidgets import (
     QApplication,
@@ -17,20 +17,23 @@ from PySide6.QtCore import (
     QCoreApplication,
     QRect,
     Qt,
+    QObject,
+    Signal,
 )
 
 
 class comDialog(QDialog, Ui_comDialog):
-    com = QSerialPort()
+    comConnected = Signal()
 
-    def __init__(self):
+    def __init__(self, com: QSerialPort):
         super().__init__()
         self.setupUi(self)
+        self.com = com
         self.btncomref.clicked.connect(self.comreflash)
         self.comreflash()
 
     def accept(self):
-        if self.comConnect():
+        if self.comConnect().isOpen():
             mess = QMessageBox()
             mess.setWindowTitle(
                 QCoreApplication.translate("MainWindow", "COM connect success")
@@ -41,9 +44,12 @@ class comDialog(QDialog, Ui_comDialog):
         return super().accept()
 
     def comConnect(self):
+        self.com.close()
         self.com.setPortName(self.listcom.currentItem().text())
         self.com.setBaudRate(int(self.combobaud.currentText()))
-        return self.com.open(QIODevice.OpenModeFlag.ReadWrite)
+        self.com.open(QIODevice.OpenModeFlag.ReadWrite)
+        self.comConnected.emit()
+        return self.com
 
     def comreflash(self):
         self.listcom.clear()
@@ -57,9 +63,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.comdig = comDialog()
+        self.com = QSerialPort()
+        self.comdig = comDialog(self.com)
+
         self.actioncom.triggered.connect(self.comdig.show)
         self.actiondisconn.triggered.connect(self.comclose)
+        self.comdig.comConnected.connect(self.comStatus)
+        self.com.errorOccurred.connect(self.comStatus)
 
         # 初始化 QSettings
         self.settings = QSettings(
@@ -68,7 +78,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.readSettings()
 
         if self.actionsets_reconn.isChecked():
-            print(self.comdig.comConnect())
+            self.comdig.comConnect()
 
     def readSettings(self):
         self.settings.beginGroup("MainWindow")
@@ -94,8 +104,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.settings.endGroup()
 
         self.settings.beginGroup("com")
-        self.settings.setValue("Name", self.comdig.com.portName())
-        self.settings.setValue("Baud", self.comdig.com.baudRate())
+        self.settings.setValue("Name", self.com.portName())
+        self.settings.setValue("Baud", self.com.baudRate())
         self.settings.endGroup()
         self.settings.sync()
 
@@ -103,6 +113,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.saveSettings()
         self.comdig.com.close()
         event.accept()
+
+    def comStatus(self):
+        # 状态栏显示串口状态
+        if self.com.isOpen():
+            self.MainstatusBar.showMessage(
+                f"COM{self.com.portName()} {self.com.baudRate()} open"
+            )
+        else:
+            self.MainstatusBar.showMessage(f"COM{self.com.portName()} close")
 
     def comclose(self):
         mess = QMessageBox()

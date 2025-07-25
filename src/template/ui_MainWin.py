@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWinSVelvY.ui'
+## Form generated from reading UI file 'MainWinOQzyrR.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.1
 ##
@@ -16,8 +16,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QMainWindow, QMenu, QMenuBar,
-    QSizePolicy, QStatusBar, QWidget)
+from PySide6.QtWidgets import (QApplication, QGridLayout, QLabel, QMainWindow,
+    QMenu, QMenuBar, QPushButton, QSizePolicy,
+    QSpacerItem, QStatusBar, QTextBrowser, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -42,8 +43,62 @@ class Ui_MainWindow(object):
         self.actionsets_reconn.setCheckable(True)
         self.actionabout = QAction(MainWindow)
         self.actionabout.setObjectName(u"actionabout")
+        self.actioncmdwin = QAction(MainWindow)
+        self.actioncmdwin.setObjectName(u"actioncmdwin")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
+        self.gridLayout_4 = QGridLayout(self.centralwidget)
+        self.gridLayout_4.setObjectName(u"gridLayout_4")
+        self.label = QLabel(self.centralwidget)
+        self.label.setObjectName(u"label")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
+        self.label.setSizePolicy(sizePolicy)
+
+        self.gridLayout_4.addWidget(self.label, 0, 1, 1, 1)
+
+        self.textOutput = QTextBrowser(self.centralwidget)
+        self.textOutput.setObjectName(u"textOutput")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.textOutput.sizePolicy().hasHeightForWidth())
+        self.textOutput.setSizePolicy(sizePolicy1)
+        self.textOutput.setMinimumSize(QSize(0, 140))
+        self.textOutput.setMaximumSize(QSize(16777215, 16777215))
+
+        self.gridLayout_4.addWidget(self.textOutput, 1, 1, 2, 1)
+
+        self.horizontalSpacer = QSpacerItem(5, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_4.addItem(self.horizontalSpacer, 1, 2, 1, 1)
+
+        self.horizontalSpacer_2 = QSpacerItem(5, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_4.addItem(self.horizontalSpacer_2, 2, 0, 1, 1)
+
+        self.gridLayout = QGridLayout()
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.btngetpause = QPushButton(self.centralwidget)
+        self.btngetpause.setObjectName(u"btngetpause")
+
+        self.gridLayout.addWidget(self.btngetpause, 0, 1, 1, 1)
+
+        self.btngetdatas = QPushButton(self.centralwidget)
+        self.btngetdatas.setObjectName(u"btngetdatas")
+
+        self.gridLayout.addWidget(self.btngetdatas, 0, 0, 1, 1)
+
+        self.btngetstop = QPushButton(self.centralwidget)
+        self.btngetstop.setObjectName(u"btngetstop")
+
+        self.gridLayout.addWidget(self.btngetstop, 0, 2, 1, 1)
+
+
+        self.gridLayout_4.addLayout(self.gridLayout, 3, 1, 1, 1)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -57,9 +112,9 @@ class Ui_MainWindow(object):
         self.menu_2 = QMenu(self.menubar)
         self.menu_2.setObjectName(u"menu_2")
         MainWindow.setMenuBar(self.menubar)
-        self.statusBar = QStatusBar(MainWindow)
-        self.statusBar.setObjectName(u"statusBar")
-        MainWindow.setStatusBar(self.statusBar)
+        self.MainstatusBar = QStatusBar(MainWindow)
+        self.MainstatusBar.setObjectName(u"MainstatusBar")
+        MainWindow.setStatusBar(self.MainstatusBar)
 
         self.menubar.addAction(self.menu_0.menuAction())
         self.menubar.addAction(self.menu_1.menuAction())
@@ -68,6 +123,7 @@ class Ui_MainWindow(object):
         self.menu_1.addAction(self.actioncom)
         self.menu_1.addAction(self.actiondisconn)
         self.menu_0.addAction(self.actionquit)
+        self.menu_3.addAction(self.actioncmdwin)
         self.menu_3.addAction(self.actionabout)
         self.menu_2.addAction(self.actionsets_reconn)
 
@@ -99,6 +155,28 @@ class Ui_MainWindow(object):
         self.actionsets_reconn.setStatusTip("")
 #endif // QT_CONFIG(statustip)
         self.actionabout.setText(QCoreApplication.translate("MainWindow", u"\u5173\u4e8e", None))
+        self.actioncmdwin.setText(QCoreApplication.translate("MainWindow", u"\u547d\u4ee4\u884c", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"\u8f93\u51fa\u663e\u793a", None))
+        self.textOutput.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'Microsoft YaHei UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
+#if QT_CONFIG(statustip)
+        self.btngetpause.setStatusTip(QCoreApplication.translate("MainWindow", u"\u6682\u505c\u6570\u636e\u83b7\u53d6", None))
+#endif // QT_CONFIG(statustip)
+        self.btngetpause.setText(QCoreApplication.translate("MainWindow", u"\u6682\u505c", None))
+#if QT_CONFIG(statustip)
+        self.btngetdatas.setStatusTip(QCoreApplication.translate("MainWindow", u"\u4ece\u8bbe\u5907\u4e2d\u83b7\u53d6\u6570\u636e", None))
+#endif // QT_CONFIG(statustip)
+        self.btngetdatas.setText(QCoreApplication.translate("MainWindow", u"\u83b7\u53d6\u6570\u636e", None))
+#if QT_CONFIG(statustip)
+        self.btngetstop.setStatusTip(QCoreApplication.translate("MainWindow", u"\u505c\u6b62\u6570\u636e\u83b7\u53d6", None))
+#endif // QT_CONFIG(statustip)
+        self.btngetstop.setText(QCoreApplication.translate("MainWindow", u"\u505c\u6b62", None))
         self.menu_1.setTitle(QCoreApplication.translate("MainWindow", u"\u8fde\u63a5", None))
         self.menu_0.setTitle(QCoreApplication.translate("MainWindow", u"\u6587\u4ef6", None))
         self.menu_3.setTitle(QCoreApplication.translate("MainWindow", u"\u5e2e\u52a9", None))
