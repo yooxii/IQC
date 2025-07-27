@@ -91,9 +91,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         comName = self.settings.value("Name", "")
         baudRate = self.settings.value("Baud", 115200, type=int)
         self.comdig.com.setPortName(comName)
-        self.comdig.listcom.setCurrentItem(
-            self.comdig.listcom.findItems(comName, Qt.MatchFlag.MatchExactly)[0]
-        )
+        item = self.comdig.listcom.findItems(comName, Qt.MatchFlag.MatchExactly)
+        if item:
+            self.comdig.listcom.setCurrentItem(item[0])
+
         self.comdig.com.setBaudRate(baudRate)
         self.comdig.combobaud.setCurrentText(str(baudRate))
         self.settings.endGroup()
