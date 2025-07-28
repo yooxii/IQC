@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWinOQzyrR.ui'
+## Form generated from reading UI file 'MainWinmcybzz.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.1
 ##
@@ -19,12 +19,13 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
 from PySide6.QtWidgets import (QApplication, QGridLayout, QLabel, QMainWindow,
     QMenu, QMenuBar, QPushButton, QSizePolicy,
     QSpacerItem, QStatusBar, QTextBrowser, QWidget)
+from . import iqc_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(320, 240)
+        MainWindow.resize(331, 274)
         MainWindow.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
         self.actiondisconn = QAction(MainWindow)
         self.actiondisconn.setObjectName(u"actiondisconn")
@@ -49,35 +50,35 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout_4 = QGridLayout(self.centralwidget)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
-        self.label = QLabel(self.centralwidget)
-        self.label.setObjectName(u"label")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
-        self.label.setSizePolicy(sizePolicy)
-
-        self.gridLayout_4.addWidget(self.label, 0, 1, 1, 1)
-
         self.textOutput = QTextBrowser(self.centralwidget)
         self.textOutput.setObjectName(u"textOutput")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.textOutput.sizePolicy().hasHeightForWidth())
-        self.textOutput.setSizePolicy(sizePolicy1)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.textOutput.sizePolicy().hasHeightForWidth())
+        self.textOutput.setSizePolicy(sizePolicy)
         self.textOutput.setMinimumSize(QSize(0, 140))
         self.textOutput.setMaximumSize(QSize(16777215, 16777215))
 
         self.gridLayout_4.addWidget(self.textOutput, 1, 1, 2, 1)
 
+        self.horizontalSpacer_2 = QSpacerItem(5, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_4.addItem(self.horizontalSpacer_2, 2, 0, 1, 1)
+
         self.horizontalSpacer = QSpacerItem(5, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_4.addItem(self.horizontalSpacer, 1, 2, 1, 1)
 
-        self.horizontalSpacer_2 = QSpacerItem(5, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
+        self.label = QLabel(self.centralwidget)
+        self.label.setObjectName(u"label")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
+        self.label.setSizePolicy(sizePolicy1)
 
-        self.gridLayout_4.addItem(self.horizontalSpacer_2, 2, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.label, 0, 1, 1, 1)
 
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
@@ -102,7 +103,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 320, 21))
+        self.menubar.setGeometry(QRect(0, 0, 331, 21))
         self.menu_1 = QMenu(self.menubar)
         self.menu_1.setObjectName(u"menu_1")
         self.menu_0 = QMenu(self.menubar)
@@ -156,7 +157,6 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(statustip)
         self.actionabout.setText(QCoreApplication.translate("MainWindow", u"\u5173\u4e8e", None))
         self.actioncmdwin.setText(QCoreApplication.translate("MainWindow", u"\u547d\u4ee4\u884c", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"\u8f93\u51fa\u663e\u793a", None))
         self.textOutput.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -165,6 +165,7 @@ class Ui_MainWindow(object):
 "li.checked::marker { content: \"\\2612\"; }\n"
 "</style></head><body style=\" font-family:'Microsoft YaHei UI'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"\u8f93\u51fa\u663e\u793a", None))
 #if QT_CONFIG(statustip)
         self.btngetpause.setStatusTip(QCoreApplication.translate("MainWindow", u"\u6682\u505c\u6570\u636e\u83b7\u53d6", None))
 #endif // QT_CONFIG(statustip)

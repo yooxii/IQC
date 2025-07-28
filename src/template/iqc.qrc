@@ -1,0 +1,10 @@
+<RCC>
+  <qresource prefix="pics">
+    <file>pic/comStatus_off.gif</file>
+    <file>pic/comStatus_on.gif</file>
+    <file>pic/acbel.jpg</file>
+    <file>pic/acbel_.jpg</file>
+    <file>pic/connected.gif</file>
+    <file>pic/disconnect.gif</file>
+  </qresource>
+</RCC>

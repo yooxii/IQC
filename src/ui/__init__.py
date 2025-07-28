@@ -5,6 +5,9 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QMessageBox,
     QDialog,
+    QHBoxLayout,
+    QLabel,
+    QWidget,
 )
 from PySide6.QtSerialPort import (
     QSerialPort,
@@ -19,6 +22,11 @@ from PySide6.QtCore import (
     Qt,
     QObject,
     Signal,
+    QSize,
+)
+from PySide6.QtGui import (
+    QPixmap,
+    QIcon,
 )
 
 
@@ -36,7 +44,7 @@ class comDialog(QDialog, Ui_comDialog):
         if self.comConnect().isOpen():
             mess = QMessageBox()
             mess.setWindowTitle(
-                QCoreApplication.translate("MainWindow", "COM connect success")
+                QCoreApplication.translate("MainWindow", "串口连接成功")
             )
             mess.setStandardButtons(QMessageBox.StandardButton.Ok)
             mess.setDefaultButton(QMessageBox.StandardButton.Ok)
@@ -65,9 +73,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.com = QSerialPort()
         self.comdig = comDialog(self.com)
+        self.initStatusBar()
 
         self.actioncom.triggered.connect(self.comdig.show)
-        self.actiondisconn.triggered.connect(self.comclose)
+        self.actiondisconn.triggered.connect(self.comClose)
         self.comdig.comConnected.connect(self.comStatus)
         self.com.errorOccurred.connect(self.comStatus)
 
@@ -80,7 +89,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if self.actionsets_reconn.isChecked():
             self.comdig.comConnect()
 
+    ############################ 设置 ############################
     def readSettings(self):
+        """从文件中加载设置项"""
         self.settings.beginGroup("MainWindow")
         self.actionsets_reconn.setChecked(
             self.settings.value("reconn", False, type=bool)
@@ -100,6 +111,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.settings.endGroup()
 
     def saveSettings(self):
+        """保存设置"""
         self.settings.beginGroup("MainWindow")
         self.settings.setValue("reconn", self.actionsets_reconn.isChecked())
         self.settings.endGroup()
@@ -115,28 +127,47 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.comdig.com.close()
         event.accept()
 
+    ############################ 状态栏 ##########################
+    def initStatusBar(self):
+        comStatusWidget = QWidget()
+        comStausLayout = QHBoxLayout()
+        comStausLayout.setContentsMargins(0, 0, 0, 0)
+
+        self.comStatusIconOn = QPixmap(":/pics/pic/comStatus_on.gif").scaled(
+            16, 16, Qt.AspectRatioMode.KeepAspectRatio
+        )
+        self.comStatusIconOff = QPixmap(":/pics/pic/comStatus_off.gif").scaled(
+            16, 16, Qt.AspectRatioMode.KeepAspectRatio
+        )
+        self.comStatusIcon = QLabel(
+            pixmap=self.comStatusIconOff,
+        )
+        self.comStatusText = QLabel(
+            text=QCoreApplication.translate("COM", "状态:"),
+        )
+
+        comStausLayout.addWidget(self.comStatusText)
+        comStausLayout.addWidget(self.comStatusIcon)
+        comStatusWidget.setLayout(comStausLayout)
+
+        self.MainstatusBar.addPermanentWidget(comStatusWidget)
+
     def comStatus(self):
         # 状态栏显示串口状态
+        self.comStatusIcon.setToolTip(self.com.portName())
         if self.com.isOpen():
-            self.MainstatusBar.showMessage(
-                f"COM{self.com.portName()} {self.com.baudRate()} open"
-            )
+            self.comStatusIcon.setPixmap(self.comStatusIconOn)
         else:
-            self.MainstatusBar.showMessage(f"COM{self.com.portName()} close")
+            self.comStatusIcon.setPixmap(self.comStatusIconOff)
 
-    def comclose(self):
+    def comClose(self):
         mess = QMessageBox()
-        mess.setWindowTitle(
-            QCoreApplication.translate("MainWindow", "COM close warning")
-        )
-        mess.setText(
-            QCoreApplication.translate(
-                "MainWindow", "Do you want to close the serial port?"
-            )
-        )
+        mess.setWindowTitle(QCoreApplication.translate("COM", "误操作警告"))
+        mess.setText(QCoreApplication.translate("COM", "是否断开串口连接？"))
         mess.setStandardButtons(
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
         mess.setDefaultButton(QMessageBox.StandardButton.No)
         if mess.exec() == QMessageBox.StandardButton.Yes:
             self.comdig.com.close()
+            self.comStatusIcon.setPixmap(self.comStatusIconOff)
