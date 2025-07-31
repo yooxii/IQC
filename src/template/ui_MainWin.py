@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWinmcybzz.ui'
+## Form generated from reading UI file 'MainWineEMkbM.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.1
 ##
@@ -27,6 +27,10 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(331, 274)
         MainWindow.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
+        icon = QIcon()
+        icon.addFile(u":/pics/pic/acbel256.gif", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        MainWindow.setWindowIcon(icon)
+        MainWindow.setIconSize(QSize(256, 256))
         self.actiondisconn = QAction(MainWindow)
         self.actiondisconn.setObjectName(u"actiondisconn")
         self.actionquit = QAction(MainWindow)

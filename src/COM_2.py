@@ -8,6 +8,8 @@ while True:
         data = ser.readline()
     if data.decode() == "quit\n":
         break
+    if data.decode() != "":
+        print(data.decode(), end="")
     ser.write(data)
 
 ser.close()

@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QApplication, QMainWindow
 from ui import *
 
-import cmds
+import TH2837.cmds as cmds
 
 
 def main():

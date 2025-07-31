@@ -1,4 +1,5 @@
 from template import *
+from TH2837 import *
 
 from PySide6.QtWidgets import (
     QApplication,
@@ -38,6 +39,7 @@ class comDialog(QDialog, Ui_comDialog):
         self.setupUi(self)
         self.com = com
         self.btncomref.clicked.connect(self.comreflash)
+
         self.comreflash()
 
     def accept(self):
@@ -79,6 +81,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actiondisconn.triggered.connect(self.comClose)
         self.comdig.comConnected.connect(self.comStatus)
         self.com.errorOccurred.connect(self.comStatus)
+
+        self.btngetdatas.clicked.connect(self.getdatas)
 
         # 初始化 QSettings
         self.settings = QSettings(
@@ -171,3 +175,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if mess.exec() == QMessageBox.StandardButton.Yes:
             self.comdig.com.close()
             self.comStatusIcon.setPixmap(self.comStatusIconOff)
+
+    def getdatas(self):
+        self.com.write(cmds.DISP.PAGEquery())

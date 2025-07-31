@@ -4,6 +4,7 @@ import re
 
 
 STATE = ["ON", "OFF", "1", "0"]
+FETC_TYPES = ["component", "list", "transformer"]
 
 
 def find_unit(value: str, units):
@@ -37,30 +38,33 @@ class DISP:
 
     font = ["LARG", "TINY", "OFF"]
 
-    @property
+    @classmethod
     def PAGEquery(self):
-        return f"DISP:PAGE?\n"
+        return f"DISP:PAGE?\n".encode()
 
-    @property
+    @classmethod
     def LINEquery(self):
-        return f"DISP:LINE?\n"
+        return f"DISP:LINE?\n".encode()
 
-    @property
+    @classmethod
     def RFONtquery(self):
-        return f"DISP:RFON?\n"
+        return f"DISP:RFON?\n".encode()
 
+    @classmethod
     def PAGE(self, page="MEAS"):
         if page not in self.page:
             raise ValueError("Invalid page")
-        return f"DISP:PAGE {page}\n"
+        return f"DISP:PAGE {page}\n".encode()
 
+    @classmethod
     def LINE(self, line: str):
-        return f'DISP:LINE "{line}"\n'
+        return f'DISP:LINE "{line}"\n'.encode()
 
+    @classmethod
     def RFONt(self, font="LARG"):
         if font not in self.font:
             raise ValueError("Invalid font")
-        return f"DISP:RFON {font}\n"
+        return f"DISP:RFON {font}\n".encode()
 
 
 class RANG:
@@ -98,15 +102,15 @@ class RANG:
             raise ValueError(f"Invalid {self.cmd} unit: {unit}")
         return f"{self.cmd} {value}\n"
 
-    @property
+    @classmethod
     def query(self):
         return f"{self.cmd}?\n"
 
-    @property
+    @classmethod
     def setMIN(self):
         return f"{self.cmd} MIN\n"
 
-    @property
+    @classmethod
     def setMAX(self):
         return f"{self.cmd} MAX\n"
 
@@ -136,22 +140,23 @@ class CURR(RANG):
 
 
 class OUTP:
-
+    @classmethod
     def HPOW(self, stat="ON"):
         if stat not in STATE:
             raise ValueError(f"Invalid state: {stat}")
         return f"OUTP:HPOW {stat}\n"
 
+    @classmethod
     def DC_ISOL(self, stat="ON"):
         if stat not in STATE:
             raise ValueError(f"Invalid state: {stat}")
         return f"OUTP:DC:ISOL {stat}\n"
 
-    @property
+    @classmethod
     def HPOWquery(self):
         return f"OUTP:HPOW?\n"
 
-    @property
+    @classmethod
     def DC_ISOLquery(self):
         return f"OUTP:DC:ISOL?\n"
 
@@ -163,42 +168,43 @@ class BIAS:
         self.VOLT = VOLT()
         self.CURR = CURR()
 
+    @classmethod
     def STATe(self, stat="ON"):
         if stat not in STATE:
             raise ValueError(f"Invalid state: {stat}")
         return f"BIAS:STAT {stat}\n"
 
-    @property
+    @classmethod
     def STATequery(self):
         return f"BIAS:STAT?\n"
 
     def VOLTage(self, value: str):
         return self.VOLT.set(value)
 
-    @property
+    @classmethod
     def VOLTageMIN(self):
         return f"{self.cmd}:{self.VOLT.setMIN}"
 
-    @property
+    @classmethod
     def VOLTageMAX(self):
         return f"{self.cmd}:{self.VOLT.setMAX}"
 
-    @property
+    @classmethod
     def VOLTagequery(self):
         return f"{self.cmd}:{self.VOLT.query}"
 
     def CURRent(self, value: str):
         return self.CURR.set(value)
 
-    @property
+    @classmethod
     def CURRentMIN(self):
         return f"{self.cmd}:{self.CURR.setMIN}"
 
-    @property
+    @classmethod
     def CURRentMAX(self):
         return f"{self.cmd}:{self.CURR.setMAX}"
 
-    @property
+    @classmethod
     def CURRentquery(self):
         return f"{self.cmd}:{self.CURR.query}"
 
@@ -237,13 +243,74 @@ class FUNC:
             raise ValueError(f"Invalid impedance: {func}")
         return f"{self.cmd}:IMP {func}\n"
 
-    @property
+    @classmethod
     def IMPedancequery(self):
         return f"{self.cmd}:IMP?\n"
 
     def IMPedanceRANGe(self, value):
         return f"{self.cmd}:IMP:{self.rang.set(value)}"
 
-    @property
+    @classmethod
     def IMPedanceRANGquery(self):
         return f"{self.cmd}:IMP:{self.rang.query}"
+
+
+class FETC:
+    """用于让TH2837X/TH2898KX 输出一个测量结果。"""
+
+    cmd = "FETC"
+
+    @classmethod
+    def query(self):
+        return f"{self.cmd}?\n"
+
+    @staticmethod
+    def decode(result: str, type: str):
+        """将FETC命令的返回结果解码为python可读形式
+        Args:
+            result (str): FETC命令的返回结果
+            type (str): 输出结果的类型，可以是：\n
+                        "component" - 返回元件测量显示、档号显示、档计数显示的结果，\n
+                        "list" - 列表扫描页，\n
+                        "transformer" - 变压器单机测量。
+        """
+
+        transformer_type = ["TURN", "Zx", "Acr", "Lx", "LK", "DCR"]
+        res = {}
+
+        if type not in FETC_TYPES:
+            raise ValueError(f"Invalid type: {type}")
+
+        data = result.replace("\n", "").split(",")
+        if type == FETC_TYPES[0]:
+            res = {
+                "dataA": float(data[0]),
+                "dataB": float(data[1]),
+                "status": int(data[2]),
+                "No": int(data[3]),
+            }
+        elif type == FETC_TYPES[1]:
+            res = {
+                "dataA": float(data[0]),
+                "dataB": float(data[1]),
+                "status": int(data[2]),
+                "judge": int(data[3]),
+            }
+        elif type == FETC_TYPES[2]:
+            res = {
+                "type": (
+                    transformer_type[int[data[0] - 1]] if 0 < int(data[0]) <= 6 else ""
+                ),
+                "dataA": float(data[1]),
+                "dataB": float(data[2]),
+                "status": int(data[3]),
+            }
+        return res
+
+
+def main():
+    print(FETC.decode("+1.12340E01,2,3,4\n", "transformer"))
+
+
+if __name__ == "__main__":
+    main()
