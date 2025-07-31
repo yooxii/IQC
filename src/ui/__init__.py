@@ -177,4 +177,34 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.comStatusIcon.setPixmap(self.comStatusIconOff)
 
     def getdatas(self):
-        self.com.write(cmds.DISP.PAGEquery())
+        import re
+        import time
+
+        page = None
+        times = 10
+        # self.com.clear()
+        while page not in cmds.DISP.page and times > 0:
+            self.com.write(cmds.DISP.PAGEquery())
+            page = self.com.readLine().data().decode().strip()
+            page = re.sub(r"[a-z]+", "", page)
+            print(page, end="")
+            time.sleep(0.02)
+            times -= 1
+        if times <= 0:
+            raise Exception(f"获取页面失败！{page}")
+
+        self.com.write(cmds.FETC.query())
+        ret = self.com.readLine().data().decode().strip()
+        print(ret)
+
+        if page in ["MEAS", "BNUM", "BCO"]:
+            datas = cmds.FETC.decode(ret, cmds.FETC_TYPES[0])
+            print(datas)
+        elif page in ["LIST", "LTAB", "LSET"]:
+            datas = cmds.FETC.decode(ret, cmds.FETC_TYPES[1])
+            print(datas)
+        elif page in ["TTS", "TLS", "TMD", "TJD", "TSD"]:
+            datas = cmds.FETC.decode(ret, cmds.FETC_TYPES[2])
+            print(datas)
+        else:
+            print(f"{page}不在测量界面！")

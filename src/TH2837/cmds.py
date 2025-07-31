@@ -1,4 +1,4 @@
-"""命令的封装"""
+"""TH2837命令的封装"""
 
 import re
 
@@ -262,7 +262,7 @@ class FETC:
 
     @classmethod
     def query(self):
-        return f"{self.cmd}?\n"
+        return f"{self.cmd}?\n".encode()
 
     @staticmethod
     def decode(result: str, type: str):

@@ -3,13 +3,22 @@ import serial
 ser = serial.Serial("COM2", 115200, timeout=1)
 
 while True:
-    data = None
-    while data is None:
+    data = ""
+    while data == "":
         data = ser.readline()
-    if data.decode() == "quit\n":
+    dec = data.decode().strip()
+    if dec == "quit":
         break
-    if data.decode() != "":
-        print(data.decode(), end="")
-    ser.write(data)
+    if dec != "":
+        print(f"dec:{dec}")
+    if dec == "DISP:PAGE?":
+        send = "LIST\n"
+    elif dec == "FETC?":
+        send = "+1.12340E01,+2.32340E05,0,-1\n"
+    else:
+        send = ""
+        # continue
+    print(f"send:{send}", end="")
+    ser.write(send.encode())
 
 ser.close()
