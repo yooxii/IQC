@@ -297,14 +297,22 @@ class FETC:
                 "judge": int(data[3]),
             }
         elif type == FETC_TYPES[2]:
-            res = {
-                "type": (
-                    transformer_type[int[data[0] - 1]] if 0 < int(data[0]) <= 6 else ""
-                ),
-                "dataA": float(data[1]),
-                "dataB": float(data[2]),
-                "status": int(data[3]),
-            }
+            no_ = int(data[0])
+            if 0 < no_ < 5:
+                res = {
+                    "type": (transformer_type[no_]),
+                    "dataA": float(data[1]),
+                    "dataB": float(data[2]),
+                    "status": int(data[3]),
+                }
+            elif 5 <= no_ <= 6:
+                res = {
+                    "type": (transformer_type[no_]),
+                    "dataA": float(data[1]),
+                    "status": int(data[2]),
+                }
+            else:
+                raise ValueError(f"错误的变压器单机测量返回值序号:{type}")
         return res
 
 

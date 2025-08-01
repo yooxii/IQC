@@ -12,9 +12,9 @@ while True:
     if dec != "":
         print(f"dec:{dec}")
     if dec == "DISP:PAGE?":
-        send = "LIST\n"
+        send = "TRANS MEAS DISP\n"
     elif dec == "FETC?":
-        send = "+1.12340E01,+2.32340E05,0,-1\n"
+        send = "+1,+2.32340E05,+1.23123E03,0\n"
     else:
         send = ""
         # continue
