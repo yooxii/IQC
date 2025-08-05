@@ -5,7 +5,7 @@ ser = serial.Serial("COM2", 115200, timeout=1)
 while True:
     data = ""
     while data == "":
-        data = ser.readline()
+        data = ser.read_all()
     dec = data.decode().strip()
     if dec == "quit":
         break

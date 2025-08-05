@@ -104,8 +104,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.comdig.comConnected.connect(self.comStatus)
         # self.qtcom.errorOccurred.connect(self.comStatus)
 
-        self.btngetdatas.clicked.connect(self.getdatas)
-        self.btncleartext.clicked.connect(self.textOutput.clear)
+        self.btnGetdatas.clicked.connect(self.getdatas)
+        self.actionreset.triggered.connect(self.tableOutput.clearFocus)
 
         # 初始化 QSettings
         self.settings = QSettings(
