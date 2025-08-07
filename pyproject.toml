@@ -8,6 +8,7 @@ dependencies = [
     "matplotlib>=3.10.3",
     "numpy>=2.3.1",
     "openpyxl>=3.1.5",
+    "pyinstaller>=6.15.0",
     "pyserial>=3.5",
     "pyside6>=6.9.1",
     "scipy>=1.16.0",

@@ -1,22 +1,36 @@
 import serial
+import random
 
 ser = serial.Serial("COM2", 115200, timeout=1)
 
+trig_sour = "BUS"
+
 while True:
     data = ""
-    while data == "":
-        data = ser.read_all()
-    dec = data.decode().strip()
+    dec = ""
+    while dec == "":
+        dec = ser.readline().decode().strip()
     if dec == "quit":
         break
     if dec != "":
         print(f"dec:{dec}")
     if dec == "DISP:PAGE?":
-        send = "TRANS MEAS DISP\n"
+        send = "< TRANS JUDGE DISP >\n"
     elif dec == "FETC?":
-        send = "+1,+2.32340E05,+1.23123E03,0\n"
+        if trig_sour == "BUS":
+            send = f"4: {random.uniform(1,9):.6}e-04, {random.uniform(1,3):.6}e+01, 3\n"
+        elif trig_sour == "INT":
+            send = f"6: {random.uniform(1,9):.6}e-01, 3\n"
+    elif dec == "TRIG":
+        send = f"1: {random.uniform(1,9):.6}e-02,+, 3\n"
+    elif dec == "TRIG:SOUR INT":
+        trig_sour = "INT"
+        send = "\n"
+    elif dec == "TRIG:SOUR BUS":
+        trig_sour = "BUS"
+        send = "\n"
     else:
-        send = ""
+        send = "\n"
         # continue
     print(f"send:{send}", end="")
     ser.write(send.encode())

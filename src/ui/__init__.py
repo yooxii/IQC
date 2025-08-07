@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QWidget,
+    QTableWidgetItem,
 )
 from PySide6.QtSerialPort import (
     QSerialPort,
@@ -90,6 +91,10 @@ class comDialog(QDialog, Ui_comDialog):
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
+    counttest = 0
+    countcomponent = 0
+    counttotal = 0
+
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -106,6 +111,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.btnGetdatas.clicked.connect(self.getdatas)
         self.actionreset.triggered.connect(self.tableOutput.clearFocus)
+        self.cboLs.currentTextChanged.connect(lambda: self.updateUnit(0))
+        self.cboRdc.currentTextChanged.connect(lambda: self.updateUnit(2))
+        self.cboNs.currentTextChanged.connect(lambda: self.updateUnit(3))
 
         # 初始化 QSettings
         self.settings = QSettings(
@@ -210,48 +218,125 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.sercom.close()
             self.comStatus()
 
+    ############################ 数据处理 ##########################
     def getdatas(self):
         import re
+        import time
+
+        if self.counttest >= 5:
+            self.counttest = 0
 
         page = None
-        # import time
-        # times = 10
-        # self.com.clear()
-        # while page not in cmds.DISP.page and times > 0:
-        #     self.qtcom.write(cmds.DISP.PAGEquery())
-        #     page = self.qtcom.readLine().data().decode().strip()
-        #     page = re.sub(r"[a-z]+", "", page)
-        #     print(page, end="")
-        #     time.sleep(0.02)
-        #     times -= 1
-        # if times <= 0:
-        #     raise Exception(f"获取页面失败！{page}")
-
-        # self.qtcom.write(cmds.FETC.query())
-        # ret = self.qtcom.readLine().data().decode().strip()
-        # print(ret)
         self.sercom.write(cmds.DISP.PAGEquery())
         page = self.sercom.readline().decode().strip()
         page = re.sub(r"[a-z]+", "", page)
         print(page, end="")
 
-        self.sercom.write(cmds.FETC.query())
-        ret = self.sercom.readline().decode().strip()
+        datas = {}
+        times = 0
+        while len(datas) < 4:
+            if times > 30:
+                raise TimeoutError("获取数据超时！")
+            if times % 3 == 0:
+                self.sercom.write(b"TRIG:SOUR BUS\n")
+                _ = self.sercom.readline()
+                time.sleep(0.1)
+                self.sercom.write(b"TRIG\n")
+                datas |= self.dealData(page)
+                if len(datas) >= 4:
+                    break
+                self.sercom.write(b"FETC?\n")
+                datas |= self.dealData(page)
+            else:
+                self.sercom.write(b"TRIG:SOUR INT\n")
+                _ = self.sercom.readline()
+                self.sercom.write(b"FETC?\n")
+                datas |= self.dealData(page)
+            times += 1
 
-        datas = self.dealData(page, ret)
+        rowCount = self.tableOutput.rowCount()
+        self.tableOutput.insertRow(rowCount)
+        itemLs = QTableWidgetItem(str(datas["Ls"]))
+        itemLs.setData(Qt.ItemDataRole.UserRole, datas["Ls"])
+        itemQ = QTableWidgetItem(str(datas["Q"]))
+        itemQ.setData(Qt.ItemDataRole.UserRole, datas["Q"])
+        itemRdc = QTableWidgetItem(str(datas["Rdc"]))
+        itemRdc.setData(Qt.ItemDataRole.UserRole, datas["Rdc"])
+        itemNs = QTableWidgetItem(str(datas["Ns"]))
+        itemNs.setData(Qt.ItemDataRole.UserRole, datas["Ns"])
+        self.tableOutput.setItem(rowCount, 0, itemLs)
+        self.tableOutput.setItem(rowCount, 1, itemQ)
+        self.tableOutput.setItem(rowCount, 2, itemRdc)
+        self.tableOutput.setItem(rowCount, 3, itemNs)
+        self.updateUnit(0)
+        self.updateUnit(2)
+        self.updateUnit(3)
 
-        self.textOutput.append(str(datas))
+        self.counttest += 1
+        self.counttotal += 1
+        if self.counttest >= 5:
+            self.countcomponent += 1
+        self.label_countcomponent.setText(str(self.countcomponent))
+        self.label_counttest.setText(str(self.counttest))
+        self.label_counttotal.setText(str(self.counttotal))
 
-    def dealData(self, page, data):
-        if page in ["LCR MEAS DISP", "BIN No. DISP", "BIN COUNT DISP"]:
-            ret = cmds.FETC.decode(data, cmds.FETC_TYPES[0])
-            print(ret)
-        elif page in ["LIST SWEEP DISP"]:
-            ret = cmds.FETC.decode(data, cmds.FETC_TYPES[1])
-            print(ret)
-        elif page in ["TRANS MEAS DISP", "TRANS JUDGE DISP"]:
-            ret = cmds.FETC.decode(data, cmds.FETC_TYPES[2])
-            print(ret)
+    def updateUnit(self, col: int):
+        import math
+
+        if col == 0:
+            unit = self.cboLs.currentText()
+        elif col == 2:
+            unit = self.cboRdc.currentText()
+        elif col == 3:
+            unit = self.cboNs.currentText()
+        else:
+            return
+
+        if "u" in unit:
+            rate = 1000000
+        elif "m" in unit:
+            rate = 1000
+        else:
+            rate = 1
+
+        for row in range(self.tableOutput.rowCount()):
+            item = self.tableOutput.item(row, col)
+            if item is None:
+                print(row, col)
+                return
+            try:
+                ori_value = float(item.data(Qt.ItemDataRole.UserRole))
+            except ValueError:
+                return
+            data = ori_value * rate
+            if data == 0:
+                decimals = 1
+            else:
+                decimals = 5 - int(math.log10(abs(data)))
+            if decimals < 0:
+                decimals = 0
+            item.setText(f"{data:.{decimals}f}")
+
+    def dealData(self, page):
+        data = self.sercom.readline().decode().strip()
+        if page in ["< LCR MEAS DISP >", "< BIN No. DISP >", "< BIN COUNT DISP >"]:
+            dec = cmds.FETC.decode(data, cmds.FETC_TYPES[0])
+            print(dec)
+        elif page in ["< LIST SWEEP DISP >"]:
+            dec = cmds.FETC.decode(data, cmds.FETC_TYPES[1])
+            print(dec)
+        elif page in ["< TRANS MEAS DISP >", "< TRANS JUDGE DISP >"]:
+            dec = cmds.FETC.decode(data, cmds.FETC_TYPES[2])
+            print(dec)
         else:
             print(f"{page}不是测量界面！")
+        ret = {}
+        if "type" in dec.keys():
+            if dec["type"] == "Lx":
+                ret["Ls"] = dec["dataA"]
+                ret["Q"] = dec["dataB"]
+            if dec["type"] == "DCR":
+                ret["Rdc"] = dec["dataA"]
+            if dec["type"] == "TURN":
+                ret["Ns"] = dec["dataA"]
         return ret

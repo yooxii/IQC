@@ -281,8 +281,8 @@ class FETC:
         if type not in FETC_TYPES:
             raise ValueError(f"Invalid type: {type}")
 
-        data = result.replace("\n", "").split(",")
         if type == FETC_TYPES[0]:
+            data = result.replace("\n", "").split(",")
             res = {
                 "dataA": float(data[0]),
                 "dataB": float(data[1]),
@@ -290,6 +290,7 @@ class FETC:
                 "No": int(data[3]),
             }
         elif type == FETC_TYPES[1]:
+            data = result.replace("\n", "").split(",")
             res = {
                 "dataA": float(data[0]),
                 "dataB": float(data[1]),
@@ -297,19 +298,27 @@ class FETC:
                 "judge": int(data[3]),
             }
         elif type == FETC_TYPES[2]:
-            no_ = int(data[0])
-            if 0 < no_ < 5:
+            no_, data = result.replace("\n", "").split(":")
+            data = data.split(",")
+            no_ = int(no_)
+            if no_ == 1:
                 res = {
-                    "type": (transformer_type[no_]),
-                    "dataA": float(data[1]),
-                    "dataB": float(data[2]),
-                    "status": int(data[3]),
+                    "type": (transformer_type[no_ - 1]),
+                    "dataA": float(data[0]) if data[1] == "+" else -float(data[0]),
+                    "status": int(data[2]),
+                }
+            elif 1 < no_ < 5:
+                res = {
+                    "type": (transformer_type[no_ - 1]),
+                    "dataA": float(data[0]),
+                    "dataB": float(data[1]),
+                    "status": int(data[2]),
                 }
             elif 5 <= no_ <= 6:
                 res = {
-                    "type": (transformer_type[no_]),
-                    "dataA": float(data[1]),
-                    "status": int(data[2]),
+                    "type": (transformer_type[no_ - 1]),
+                    "dataA": float(data[0]),
+                    "status": int(data[1]),
                 }
             else:
                 raise ValueError(f"错误的变压器单机测量返回值序号:{type}")

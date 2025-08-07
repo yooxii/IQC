@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWinKfoKdz.ui'
+## Form generated from reading UI file 'MainWinBBBLdd.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.1
 ##
@@ -174,8 +174,6 @@ class Ui_MainWindow(object):
         self.tableOutput.setHorizontalHeaderItem(2, __qtablewidgetitem2)
         __qtablewidgetitem3 = QTableWidgetItem()
         self.tableOutput.setHorizontalHeaderItem(3, __qtablewidgetitem3)
-        if (self.tableOutput.rowCount() < 1):
-            self.tableOutput.setRowCount(1)
         self.tableOutput.setObjectName(u"tableOutput")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -190,7 +188,7 @@ class Ui_MainWindow(object):
         self.tableOutput.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerItem)
         self.tableOutput.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
         self.tableOutput.setGridStyle(Qt.PenStyle.DotLine)
-        self.tableOutput.setRowCount(1)
+        self.tableOutput.setRowCount(0)
         self.tableOutput.setColumnCount(4)
         self.tableOutput.horizontalHeader().setVisible(True)
         self.tableOutput.horizontalHeader().setDefaultSectionSize(90)
@@ -313,6 +311,9 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.actionquit.triggered.connect(MainWindow.close)
+
+        self.cboNs.setCurrentIndex(0)
+
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
