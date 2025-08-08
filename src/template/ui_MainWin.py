@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWinBBBLdd.ui'
+## Form generated from reading UI file 'MainWinsLNfot.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.1
 ##
@@ -28,14 +28,11 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.setWindowModality(Qt.WindowModality.NonModal)
         MainWindow.resize(450, 400)
         MainWindow.setMinimumSize(QSize(450, 300))
-        MainWindow.setContextMenuPolicy(Qt.ContextMenuPolicy.DefaultContextMenu)
         icon = QIcon()
         icon.addFile(u":/pics/pic/acbel256.gif", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         MainWindow.setWindowIcon(icon)
-        MainWindow.setIconSize(QSize(32, 32))
         MainWindow.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonFollowStyle)
         self.actiondisconn = QAction(MainWindow)
         self.actiondisconn.setObjectName(u"actiondisconn")
@@ -341,7 +338,7 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(statustip)
         self.actionabout.setText(QCoreApplication.translate("MainWindow", u"\u5173\u4e8e", None))
         self.actioncmdwin.setText(QCoreApplication.translate("MainWindow", u"\u547d\u4ee4\u884c", None))
-        self.actionsavedatas.setText(QCoreApplication.translate("MainWindow", u"\u4fdd\u5b58\u6570\u636e", None))
+        self.actionsavedatas.setText(QCoreApplication.translate("MainWindow", u"\u5c06\u6570\u636e\u53e6\u5b58\u4e3a", None))
         self.actionreset.setText(QCoreApplication.translate("MainWindow", u"\u91cd\u7f6e", None))
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u5f55\u5165\u6570\u636e\u7c7b\u578b", None))
 #if QT_CONFIG(statustip)

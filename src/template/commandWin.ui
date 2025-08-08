@@ -6,137 +6,221 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>480</height>
+    <width>560</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="gridLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>190</x>
-      <y>40</y>
-      <width>430</width>
-      <height>261</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="2">
-      <widget class="QLabel" name="label">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0" rowspan="2">
+     <widget class="QTreeWidget" name="treeWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>150</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="indentation">
+       <number>10</number>
+      </property>
+      <attribute name="headerVisible">
+       <bool>false</bool>
+      </attribute>
+      <column>
        <property name="text">
-        <string>回显已发送消息:</string>
+        <string>命令</string>
        </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
+      </column>
+      <item>
        <property name="text">
-        <string>查看模式:</string>
+        <string>返回测量数据</string>
        </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="comboBox">
+      </item>
+      <item>
+       <property name="text">
+        <string>触发</string>
+       </property>
        <item>
         <property name="text">
-         <string>文本</string>
+         <string>触发一次</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>十六进制</string>
+         <string>触发源</string>
         </property>
+        <item>
+         <property name="text">
+          <string>自动</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>手动</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>总线</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>外部</string>
+         </property>
+        </item>
        </item>
-      </widget>
-     </item>
-     <item row="1" column="0" colspan="5">
-      <widget class="QTextBrowser" name="textBrowser"/>
-     </item>
-     <item row="0" column="3">
-      <widget class="QComboBox" name="comboBox_2">
+      </item>
+      <item>
+       <property name="text">
+        <string>仪器页面</string>
+       </property>
        <item>
         <property name="text">
-         <string>回显</string>
+         <string>元件测量显示</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>不回显</string>
+         <string>档号显示</string>
         </property>
        </item>
-      </widget>
-     </item>
-     <item row="0" column="4">
-      <widget class="QPushButton" name="pushButton">
+       <item>
+        <property name="text">
+         <string>档计数显示</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>列表扫描显示</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>测量设置</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>用户校正功能</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>极限列表设置</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>列表扫描设置</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>系统设置页面</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>变压器测试设置</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>变压器极限设置</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>变压器测量显示</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>变压器判别显示</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>变压器扫描测试页面</string>
+        </property>
+       </item>
+      </item>
+      <item>
        <property name="text">
-        <string>清除输出</string>
+        <string>测量速度</string>
        </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="horizontalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>190</x>
-      <y>310</y>
-      <width>431</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QTextEdit" name="textEdit">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>30</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton_2">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>30</height>
-        </size>
-       </property>
+       <item>
+        <property name="text">
+         <string>慢</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>中</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>快</string>
+        </property>
+       </item>
+      </item>
+      <item>
        <property name="text">
-        <string>发送</string>
+        <string>查询</string>
        </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
+       <item>
+        <property name="text">
+         <string>当前页面</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>触发源</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>测量速度</string>
+        </property>
+       </item>
+      </item>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLineEdit" name="lineEdit"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>发送</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="1">
+     <widget class="QTextBrowser" name="textBrowser"/>
+    </item>
+   </layout>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>

@@ -2,9 +2,6 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
-  <property name="windowModality">
-   <enum>Qt::WindowModality::NonModal</enum>
-  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -19,21 +16,12 @@
     <height>300</height>
    </size>
   </property>
-  <property name="contextMenuPolicy">
-   <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
-  </property>
   <property name="windowTitle">
    <string>TH2837</string>
   </property>
   <property name="windowIcon">
    <iconset resource="iqc.qrc">
     <normaloff>:/pics/pic/acbel256.gif</normaloff>:/pics/pic/acbel256.gif</iconset>
-  </property>
-  <property name="iconSize">
-   <size>
-    <width>32</width>
-    <height>32</height>
-   </size>
   </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonStyle::ToolButtonFollowStyle</enum>

@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
     QLabel,
     QWidget,
     QTableWidgetItem,
+    QFileDialog,
 )
 from PySide6.QtSerialPort import (
     QSerialPort,
@@ -114,6 +115,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.cboLs.currentTextChanged.connect(lambda: self.updateUnit(0))
         self.cboRdc.currentTextChanged.connect(lambda: self.updateUnit(2))
         self.cboNs.currentTextChanged.connect(lambda: self.updateUnit(3))
+
+        self.actionsavedatas.triggered.connect(self.savedatas)
 
         # 初始化 QSettings
         self.settings = QSettings(
@@ -340,3 +343,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if dec["type"] == "TURN":
                 ret["Ns"] = dec["dataA"]
         return ret
+
+    def savedatas(self):
+        savefile = QFileDialog.getSaveFileName(
+            self, "将数据另存为", filter="*.csv;;*.xlsx;;*.txt;;*.json"
+        )
