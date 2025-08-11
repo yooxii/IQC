@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWinsLNfot.ui'
+## Form generated from reading UI file 'MainWinkBmcRs.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.1
 ##
@@ -57,6 +57,10 @@ class Ui_MainWindow(object):
         self.actionsavedatas.setObjectName(u"actionsavedatas")
         self.actionreset = QAction(MainWindow)
         self.actionreset.setObjectName(u"actionreset")
+        self.actioncompadd = QAction(MainWindow)
+        self.actioncompadd.setObjectName(u"actioncompadd")
+        self.actionsettings = QAction(MainWindow)
+        self.actionsettings.setObjectName(u"actionsettings")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout_4 = QGridLayout(self.centralwidget)
@@ -227,14 +231,13 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addWidget(self.label_counttest)
 
-        self.label_2 = QLabel(self.centralwidget)
-        self.label_2.setObjectName(u"label_2")
-        sizePolicy1.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
-        self.label_2.setSizePolicy(sizePolicy1)
-        self.label_2.setMinimumSize(QSize(0, 10))
-        self.label_2.setMaximumSize(QSize(16777215, 20))
+        self.btn_countcomponent = QPushButton(self.centralwidget)
+        self.btn_countcomponent.setObjectName(u"btn_countcomponent")
+        self.btn_countcomponent.setMinimumSize(QSize(0, 10))
+        self.btn_countcomponent.setMaximumSize(QSize(16777215, 20))
+        self.btn_countcomponent.setStyleSheet(u"background-color: rgba(255, 255, 255, 0);")
 
-        self.horizontalLayout.addWidget(self.label_2)
+        self.horizontalLayout.addWidget(self.btn_countcomponent)
 
         self.label_countcomponent = QLabel(self.centralwidget)
         self.label_countcomponent.setObjectName(u"label_countcomponent")
@@ -297,6 +300,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu_2.menuAction())
         self.menubar.addAction(self.menu_3.menuAction())
         self.menu_1.addAction(self.actioncom)
+        self.menu_1.addSeparator()
         self.menu_1.addAction(self.actiondisconn)
         self.menu_0.addAction(self.actionsavedatas)
         self.menu_0.addAction(self.actionreset)
@@ -305,6 +309,9 @@ class Ui_MainWindow(object):
         self.menu_3.addAction(self.actioncmdwin)
         self.menu_3.addAction(self.actionabout)
         self.menu_2.addAction(self.actionsets_reconn)
+        self.menu_2.addAction(self.actioncompadd)
+        self.menu_2.addSeparator()
+        self.menu_2.addAction(self.actionsettings)
 
         self.retranslateUi(MainWindow)
         self.actionquit.triggered.connect(MainWindow.close)
@@ -340,6 +347,8 @@ class Ui_MainWindow(object):
         self.actioncmdwin.setText(QCoreApplication.translate("MainWindow", u"\u547d\u4ee4\u884c", None))
         self.actionsavedatas.setText(QCoreApplication.translate("MainWindow", u"\u5c06\u6570\u636e\u53e6\u5b58\u4e3a", None))
         self.actionreset.setText(QCoreApplication.translate("MainWindow", u"\u91cd\u7f6e", None))
+        self.actioncompadd.setText(QCoreApplication.translate("MainWindow", u"\u96f6\u4ef6\u6570\u589e\u4e00", None))
+        self.actionsettings.setText(QCoreApplication.translate("MainWindow", u"\u66f4\u591a\u8bbe\u7f6e...", None))
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u5f55\u5165\u6570\u636e\u7c7b\u578b", None))
 #if QT_CONFIG(statustip)
         self.rBtnLs.setStatusTip(QCoreApplication.translate("MainWindow", u"\u7535\u611f\u91cf", None))
@@ -394,27 +403,13 @@ class Ui_MainWindow(object):
         self.label_counttest.setStatusTip("")
 #endif // QT_CONFIG(statustip)
         self.label_counttest.setText(QCoreApplication.translate("MainWindow", u"0", None))
-#if QT_CONFIG(tooltip)
-        self.label_2.setToolTip(QCoreApplication.translate("MainWindow", u"1.\u8fbe\u5230\u6307\u5b9a\u6d4b\u8bd5\u6b21\u6570\u65f6\u8ba1\u6570\n"
-"2.\u53cc\u51fb\u6b64\u5904\u624b\u52a8\u8ba1\u6570", None))
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(statustip)
-        self.label_2.setStatusTip(QCoreApplication.translate("MainWindow", u"\u53cc\u51fb\u4ee5\u624b\u52a8\u8ba1\u6570", None))
-#endif // QT_CONFIG(statustip)
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"\u96f6\u4ef6\u8ba1\u6570:", None))
-#if QT_CONFIG(tooltip)
-        self.label_countcomponent.setToolTip(QCoreApplication.translate("MainWindow", u"1.\u8fbe\u5230\u6307\u5b9a\u6d4b\u8bd5\u6b21\u6570\u65f6\u8ba1\u6570\n"
-"2.\u53cc\u51fb\u6b64\u5904\u624b\u52a8\u8ba1\u6570", None))
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(statustip)
-        self.label_countcomponent.setStatusTip(QCoreApplication.translate("MainWindow", u"\u53cc\u51fb\u4ee5\u624b\u52a8\u8ba1\u6570", None))
-#endif // QT_CONFIG(statustip)
+        self.btn_countcomponent.setText(QCoreApplication.translate("MainWindow", u"\u96f6\u4ef6\u8ba1\u6570:", None))
         self.label_countcomponent.setText(QCoreApplication.translate("MainWindow", u"0", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"\u603b\u8ba1\u6570:", None))
         self.label_counttotal.setText(QCoreApplication.translate("MainWindow", u"0", None))
         self.menu_1.setTitle(QCoreApplication.translate("MainWindow", u"\u8fde\u63a5", None))
         self.menu_0.setTitle(QCoreApplication.translate("MainWindow", u"\u6587\u4ef6", None))
         self.menu_3.setTitle(QCoreApplication.translate("MainWindow", u"\u5e2e\u52a9", None))
-        self.menu_2.setTitle(QCoreApplication.translate("MainWindow", u"\u8bbe\u7f6e", None))
+        self.menu_2.setTitle(QCoreApplication.translate("MainWindow", u"\u9009\u9879", None))
     # retranslateUi
 

@@ -10,11 +10,8 @@ from PySide6.QtWidgets import (
     QLabel,
     QWidget,
     QTableWidgetItem,
+    QTreeWidgetItem,
     QFileDialog,
-)
-from PySide6.QtSerialPort import (
-    QSerialPort,
-    QSerialPortInfo,
 )
 from PySide6.QtCore import (
     QIODevice,
@@ -37,7 +34,6 @@ import serial.tools.list_ports
 
 class comDialog(QDialog, Ui_comDialog):
     comConnected = Signal()
-    qtcom = None
     sercom = None
     portname = "COM1"
     portbaud = 115200
@@ -45,7 +41,6 @@ class comDialog(QDialog, Ui_comDialog):
     def __init__(self, com: serial.Serial):
         super().__init__()
         self.setupUi(self)
-        # self.qtcom: QSerialPort = com
         self.sercom: serial.Serial = com
         self.btncomref.clicked.connect(self.comsReflash)
         self.listcom.clicked.connect(self.setPort)
@@ -65,12 +60,6 @@ class comDialog(QDialog, Ui_comDialog):
         return super().accept()
 
     def comConnect(self):
-        # self.qtcom.close()
-        # self.qtcom.setPortName(self.portname)
-        # self.qtcom.setBaudRate(self.portbaud)
-        # self.qtcom.open(QIODevice.OpenModeFlag.ReadWrite)
-        # self.comConnected.emit()
-
         self.sercom.close()
         self.sercom.port = self.portname
         self.sercom.baudrate = self.portbaud
@@ -91,6 +80,19 @@ class comDialog(QDialog, Ui_comDialog):
             self.listcom.setCurrentRow(0)
 
 
+class setsDialog(QDialog, Ui_MoreSetsDialog):
+    def __init__(self, settings: QSettings):
+        super().__init__()
+        self.setupUi(self)
+
+        self.settings = settings
+
+        self.treeWidget.itemClicked.connect(self.setPageChange)
+
+    def setPageChange(self, item: QTreeWidgetItem, col):
+        print(item.text(col))
+
+
 class MainWindow(QMainWindow, Ui_MainWindow):
     counttest = 0
     countcomponent = 0
@@ -99,8 +101,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.qtcom = None
-        """QSerialPort()"""
         self.sercom = serial.Serial()
         self.comdig = comDialog(self.sercom)
         self.initStatusBar()
@@ -108,15 +108,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actioncom.triggered.connect(self.comdig.show)
         self.actiondisconn.triggered.connect(self.comClose)
         self.comdig.comConnected.connect(self.comStatus)
-        # self.qtcom.errorOccurred.connect(self.comStatus)
 
-        self.btnGetdatas.clicked.connect(self.getdatas)
+        self.btnGetdatas.clicked.connect(self.getDatas)
         self.actionreset.triggered.connect(self.tableOutput.clearFocus)
         self.cboLs.currentTextChanged.connect(lambda: self.updateUnit(0))
         self.cboRdc.currentTextChanged.connect(lambda: self.updateUnit(2))
         self.cboNs.currentTextChanged.connect(lambda: self.updateUnit(3))
 
-        self.actionsavedatas.triggered.connect(self.savedatas)
+        self.actionsavedatas.triggered.connect(self.saveDatas)
+        self.actionreset.triggered.connect(self.reset)
+        self.actioncompadd.triggered.connect(self.countComponent)
+        self.actionsettings.triggered.connect(self.showMoresettings)
 
         # 初始化 QSettings
         self.settings = QSettings(
@@ -124,14 +126,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         )
         self.readSettings()
 
+        self.setsdig = setsDialog(self.settings)
+
         if self.actionsets_reconn.isChecked():
-            com = self.comdig.comConnect()
-            if isinstance(com, QSerialPort):
-                self.qtcom = com
-            else:
-                self.sercom = com
+            self.sercom = self.comdig.comConnect()
 
     ############################ 设置 ############################
+    def showMoresettings(self):
+        self.setsdig.show()
+        print("setsdig!!!")
+
     def readSettings(self):
         """从文件中加载设置项"""
         self.settings.beginGroup("MainWindow")
@@ -184,9 +188,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.comStatusIcon = QLabel(
             pixmap=self.comStatusIconOff,
         )
-        self.comStatusText = QLabel(
-            text=QCoreApplication.translate("COM", "状态:"),
-        )
+        self.comStatusText = QLabel(text=self.tr("status:"))
 
         comStausLayout.addWidget(self.comStatusText)
         comStausLayout.addWidget(self.comStatusIcon)
@@ -196,23 +198,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def comStatus(self):
         # 状态栏显示串口状态
-        if self.qtcom:
-            self.comStatusIcon.setToolTip(self.qtcom.portName())
-            if self.qtcom.isOpen():
-                self.comStatusIcon.setPixmap(self.comStatusIconOn)
-            else:
-                self.comStatusIcon.setPixmap(self.comStatusIconOff)
+        self.comStatusIcon.setToolTip(self.sercom.port)
+        if self.sercom.is_open:
+            self.comStatusIcon.setPixmap(self.comStatusIconOn)
         else:
-            self.comStatusIcon.setToolTip(self.sercom.port)
-            if self.sercom.is_open:
-                self.comStatusIcon.setPixmap(self.comStatusIconOn)
-            else:
-                self.comStatusIcon.setPixmap(self.comStatusIconOff)
+            self.comStatusIcon.setPixmap(self.comStatusIconOff)
 
     def comClose(self):
         mess = QMessageBox()
-        mess.setWindowTitle(QCoreApplication.translate("COM", "误操作警告"))
-        mess.setText(QCoreApplication.translate("COM", "是否断开串口连接？"))
+        mess.setWindowTitle(self.tr("Warning of Misoperation"))
+        mess.setText(self.tr("Should the serial port connection be disconnected?"))
         mess.setStandardButtons(
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
@@ -221,13 +216,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.sercom.close()
             self.comStatus()
 
-    ############################ 数据处理 ##########################
-    def getdatas(self):
+    ############################ 数据处理 ########################
+    def getDatas(self):
         import re
         import time
-
-        if self.counttest >= 5:
-            self.counttest = 0
 
         page = None
         self.sercom.write(cmds.DISP.PAGEquery())
@@ -239,7 +231,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         times = 0
         while len(datas) < 4:
             if times > 30:
-                raise TimeoutError("获取数据超时！")
+                raise TimeoutError(self.tr("Data acquisition timeout!"))
             if times % 3 == 0:
                 self.sercom.write(b"TRIG:SOUR BUS\n")
                 _ = self.sercom.readline()
@@ -278,10 +270,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.counttest += 1
         self.counttotal += 1
         if self.counttest >= 5:
+            self.counttest = 0
             self.countcomponent += 1
-        self.label_countcomponent.setText(str(self.countcomponent))
-        self.label_counttest.setText(str(self.counttest))
-        self.label_counttotal.setText(str(self.counttotal))
+        self.countUpdate()
 
     def updateUnit(self, col: int):
         import math
@@ -332,7 +323,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             dec = cmds.FETC.decode(data, cmds.FETC_TYPES[2])
             print(dec)
         else:
-            print(f"{page}不是测量界面！")
+            raise IndexError(f"{page}" + self.tr("Not the measurement interface!"))
         ret = {}
         if "type" in dec.keys():
             if dec["type"] == "Lx":
@@ -344,7 +335,71 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 ret["Ns"] = dec["dataA"]
         return ret
 
-    def savedatas(self):
+    def saveDatas(self):
+        if self.tableOutput.rowCount() == 0:
+            raise IndexError(self.tr("No data can be saved!"))
+        import pandas as pd
+        import json
+
         savefile = QFileDialog.getSaveFileName(
-            self, "将数据另存为", filter="*.csv;;*.xlsx;;*.txt;;*.json"
+            self, self.tr("Save the data as"), filter="*.csv;;*.xlsx;;*.txt;;*.json"
         )
+        savedata = []
+        for row in range(self.tableOutput.rowCount()):
+            row_data = []
+            for col in range(self.tableOutput.columnCount()):
+                item = self.tableOutput.item(row, col).text()
+                row_data.append(item)
+            savedata.append(row_data)
+
+        df = pd.DataFrame(savedata)
+        if savefile[1] in ["*.csv", "*.txt"]:
+            df.to_csv(savefile[0], index=None, header=None)
+        elif savefile[1] in ["*.xlsx"]:
+            df.to_excel(savefile[0], index=None, header=None)
+        elif savefile[1] in ["*.json"]:
+            with open(savefile[0], "w") as f:
+                json.dump(savedata, f)
+
+    ############################ 重置 ###########################
+    def reset(self):
+        mess = QMessageBox()
+        mess.setWindowTitle(self.tr("Reset"))
+        mess.setText(self.tr("Should all data be reset?"))
+        mess.setStandardButtons(
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+        mess.setDefaultButton(QMessageBox.StandardButton.No)
+        if mess.exec() == QMessageBox.StandardButton.No:
+            return
+        for _ in range(self.tableOutput.rowCount()):
+            self.tableOutput.removeRow(0)
+        self.countcomponent = self.counttest = self.counttotal = 0
+        self.countUpdate()
+
+    ############################ 计数 ###########################
+    def countComponent(self):
+        if self.counttest == 0:
+            mess = QMessageBox()
+            mess.setWindowTitle(self.tr("Count of components"))
+            mess.setText(
+                self.tr(
+                    "The test count is zero, but the component count still increases?"
+                )
+            )
+            mess.setStandardButtons(
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            )
+            mess.setDefaultButton(QMessageBox.StandardButton.No)
+            if mess.exec() == QMessageBox.StandardButton.No:
+                return
+        elif self.counttest >= 5:
+            pass
+        self.counttest = 0
+        self.countcomponent += 1
+        self.countUpdate()
+
+    def countUpdate(self):
+        self.label_countcomponent.setText(str(self.countcomponent))
+        self.label_counttest.setText(str(self.counttest))
+        self.label_counttotal.setText(str(self.counttotal))
