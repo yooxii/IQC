@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MoreSettingsGHkdKC.ui'
+## Form generated from reading UI file 'MoreSettingsPIWsqI.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.1
 ##
@@ -48,12 +48,8 @@ class Ui_MoreSetsDialog(object):
 
         self.groupBox = QGroupBox(MoreSetsDialog)
         self.groupBox.setObjectName(u"groupBox")
-        self.verticalLayoutWidget = QWidget(self.groupBox)
-        self.verticalLayoutWidget.setObjectName(u"verticalLayoutWidget")
-        self.verticalLayoutWidget.setGeometry(QRect(10, 20, 160, 80))
-        self.verticalLayout = QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_2 = QVBoxLayout(self.groupBox)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
 
         self.horizontalLayout.addWidget(self.groupBox)
 

@@ -8,6 +8,8 @@ from PySide6.QtWidgets import (
     QDialog,
     QHBoxLayout,
     QLabel,
+    QComboBox,
+    QSpinBox,
     QWidget,
     QTableWidgetItem,
     QTreeWidgetItem,
@@ -90,7 +92,32 @@ class setsDialog(QDialog, Ui_MoreSetsDialog):
         self.treeWidget.itemClicked.connect(self.setPageChange)
 
     def setPageChange(self, item: QTreeWidgetItem, col):
-        print(item.text(col))
+        page = item.text(col)
+        if page == "窗口":
+            self.WinSets()
+        elif page == "数据":
+            self.DataSets()
+        else:
+            print(f"Not page:{page}")
+
+    def WinSets(self):
+        self.groupBox.setTitle(self.tr("Window Settings"))
+
+    def DataSets(self):
+        self.groupBox.setTitle(self.tr("Data Settings"))
+        self.label_times = QLabel(self.tr("Basic magnification"))
+        self.verticalLayout_2.addWidget(self.label_times)
+
+        self.hLayou_ls = QHBoxLayout()
+        self.label_ls_times = QLabel(self.tr("Ls:"))
+        self.label_ls_times.setMaximumWidth(120)
+        self.comb_ls_times = QSpinBox()
+        self.comb_ls_times.setMinimum(-10)
+        self.comb_ls_times.setMaximum(10)
+        self.hLayou_ls.addWidget(self.label_ls_times)
+        self.hLayou_ls.addWidget(self.comb_ls_times)
+
+        self.verticalLayout_2.addLayout(self.hLayou_ls)
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -101,7 +128,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.sercom = serial.Serial()
+        self.sercom = serial.Serial(timeout=1)
         self.comdig = comDialog(self.sercom)
         self.initStatusBar()
 
@@ -134,7 +161,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     ############################ 设置 ############################
     def showMoresettings(self):
         self.setsdig.show()
-        print("setsdig!!!")
+        # print("setsdig!!!")
 
     def readSettings(self):
         """从文件中加载设置项"""
@@ -235,7 +262,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if times % 3 == 0:
                 self.sercom.write(b"TRIG:SOUR BUS\n")
                 _ = self.sercom.readline()
-                time.sleep(0.1)
+                self.sercom.write(b"TRIG\n")
+                datas |= self.dealData(page)
+                # time.sleep(0.1)
                 self.sercom.write(b"TRIG\n")
                 datas |= self.dealData(page)
                 if len(datas) >= 4:
@@ -245,6 +274,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             else:
                 self.sercom.write(b"TRIG:SOUR INT\n")
                 _ = self.sercom.readline()
+                self.sercom.write(b"FETC?\n")
+                datas |= self.dealData(page)
                 self.sercom.write(b"FETC?\n")
                 datas |= self.dealData(page)
             times += 1
@@ -312,7 +343,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             item.setText(f"{data:.{decimals}f}")
 
     def dealData(self, page):
-        data = self.sercom.readline().decode().strip()
+        data = self.sercom.readline()
+        try:
+            data = data.decode().strip()
+        except:
+            data = str(data)
         if page in ["< LCR MEAS DISP >", "< BIN No. DISP >", "< BIN COUNT DISP >"]:
             dec = cmds.FETC.decode(data, cmds.FETC_TYPES[0])
             print(dec)
