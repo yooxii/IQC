@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWinkBmcRs.ui'
+## Form generated from reading UI file 'MainWinsjoiUO.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.1
 ##
@@ -185,8 +185,7 @@ class Ui_MainWindow(object):
         self.tableOutput.setLineWidth(0)
         self.tableOutput.setAutoScrollMargin(12)
         self.tableOutput.setEditTriggers(QAbstractItemView.EditTrigger.EditKeyPressed)
-        self.tableOutput.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectColumns)
-        self.tableOutput.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerItem)
+        self.tableOutput.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectItems)
         self.tableOutput.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
         self.tableOutput.setGridStyle(Qt.PenStyle.DotLine)
         self.tableOutput.setRowCount(0)
@@ -301,6 +300,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu_3.menuAction())
         self.menu_1.addAction(self.actioncom)
         self.menu_1.addSeparator()
+        self.menu_1.addAction(self.actionsets_reconn)
         self.menu_1.addAction(self.actiondisconn)
         self.menu_0.addAction(self.actionsavedatas)
         self.menu_0.addAction(self.actionreset)
@@ -308,7 +308,6 @@ class Ui_MainWindow(object):
         self.menu_0.addAction(self.actionquit)
         self.menu_3.addAction(self.actioncmdwin)
         self.menu_3.addAction(self.actionabout)
-        self.menu_2.addAction(self.actionsets_reconn)
         self.menu_2.addAction(self.actioncompadd)
         self.menu_2.addSeparator()
         self.menu_2.addAction(self.actionsettings)

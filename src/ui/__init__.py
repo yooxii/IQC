@@ -1,6 +1,8 @@
 from template import *
 from TH2837 import *
 
+import pandas as pd
+
 from PySide6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -14,6 +16,7 @@ from PySide6.QtWidgets import (
     QTableWidgetItem,
     QTreeWidgetItem,
     QFileDialog,
+    QFontDialog,
 )
 from PySide6.QtCore import (
     QIODevice,
@@ -29,6 +32,7 @@ from PySide6.QtCore import (
 from PySide6.QtGui import (
     QPixmap,
     QIcon,
+    QFont,
 )
 import serial
 import serial.tools.list_ports
@@ -39,6 +43,7 @@ class comDialog(QDialog, Ui_comDialog):
     sercom = None
     portname = "COM1"
     portbaud = 115200
+    theme = ""
 
     def __init__(self, com: serial.Serial):
         super().__init__()
@@ -88,46 +93,95 @@ class setsDialog(QDialog, Ui_MoreSetsDialog):
         self.setupUi(self)
 
         self.settings = settings
+        self.currentFont = None
 
         self.treeWidget.itemClicked.connect(self.setPageChange)
+        self.tbtn_fontfamily.clicked.connect(self.getfont)
+
+        self.setShow()
+
+    def setShow(self):
+        self.settings.beginGroup("MainWindow")
+        fontfamily = self.settings.value("font_family", "Microsoft YaHei UI", type=str)
+        fontsize = self.settings.value("font_size", 14, type=int)
+        self.currentFont = QFont(fontfamily, pointSize=fontsize)
+        self.edit_fontfamily.setText(fontfamily)
+        self.spin_fontsize.setValue(fontsize)
+        theme = self.settings.value("theme", self.tr("Light"), type=str)
+        self.comb_theme.setCurrentText(theme)
+        atw = self.settings.value("always_top_window", False, type=bool)
+        self.check_topwin.setChecked(atw)
+        self.settings.endGroup()
+
+        self.settings.beginGroup("Data")
+        poioff = self.settings.value("decimal_point_offset", [0, 0, 0, 0], type=list)
+        poi = [int(x) for x in poioff]
+        self.spin_ls.setValue(poi[0])
+        self.spin_q.setValue(poi[1])
+        self.spin_rdc.setValue(poi[2])
+        self.spin_ns.setValue(poi[3])
+        self.settings.endGroup()
 
     def setPageChange(self, item: QTreeWidgetItem, col):
         page = item.text(col)
-        if page == "窗口":
-            self.WinSets()
-        elif page == "数据":
-            self.DataSets()
-        else:
-            print(f"Not page:{page}")
 
-    def WinSets(self):
-        self.groupBox.setTitle(self.tr("Window Settings"))
+    def getfont(self):
+        ff = self.edit_fontfamily.text()
+        fs = self.spin_fontsize.value()
+        ok, font = QFontDialog().getFont(QFont(ff, fs), self)
+        self.currentFont = font
+        if ok:
+            self.edit_fontfamily.setText(font.family())
+            self.spin_fontsize.setValue(font.pointSize())
 
-    def DataSets(self):
-        self.groupBox.setTitle(self.tr("Data Settings"))
-        self.label_times = QLabel(self.tr("Basic magnification"))
-        self.verticalLayout_2.addWidget(self.label_times)
+    def getPointOffest(self):
+        ret = []
+        ret.append(self.spin_ls.value())
+        ret.append(self.spin_q.value())
+        ret.append(self.spin_rdc.value())
+        ret.append(self.spin_ns.value())
+        return ret
 
-        self.hLayou_ls = QHBoxLayout()
-        self.label_ls_times = QLabel(self.tr("Ls:"))
-        self.label_ls_times.setMaximumWidth(120)
-        self.comb_ls_times = QSpinBox()
-        self.comb_ls_times.setMinimum(-10)
-        self.comb_ls_times.setMaximum(10)
-        self.hLayou_ls.addWidget(self.label_ls_times)
-        self.hLayou_ls.addWidget(self.comb_ls_times)
+    def saveSettings(self):
+        self.settings.beginGroup("MainWindow")
+        self.settings.setValue("font_family", self.currentFont.family())
+        self.settings.setValue("font_size", self.currentFont.pointSize())
+        self.settings.setValue("theme", self.comb_theme.currentText())
+        self.settings.setValue("always_top_window", self.check_topwin.isChecked())
+        self.settings.endGroup()
 
-        self.verticalLayout_2.addLayout(self.hLayou_ls)
+        self.settings.beginGroup("Data")
+        self.settings.setValue("decimal_point_offset", self.getPointOffest())
+        self.settings.endGroup()
+
+        self.settings.beginGroup("Device")
+        self.settings.setValue("DISP", self.comb_disp.currentText())
+        self.settings.endGroup()
+
+        self.settings.sync()
+
+    def accept(self):
+        self.saveSettings()
+        return super().accept()
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     counttest = 0
     countcomponent = 0
     counttotal = 0
+    pointoffest = [0, 0, 0, 0]
+    alldata = []
+    isdarktheme = True
+    theme = ""
+    always_top_win = False
+    font_family = ""
+    font_size = 14
+    cur_font = None
 
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.setsdig = None
         self.sercom = serial.Serial(timeout=1)
         self.comdig = comDialog(self.sercom)
         self.initStatusBar()
@@ -153,22 +207,108 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         )
         self.readSettings()
 
-        self.setsdig = setsDialog(self.settings)
-
         if self.actionsets_reconn.isChecked():
             self.sercom = self.comdig.comConnect()
 
+        self.loadStyle()
+
+    def show(self):
+        super().show()
+        self.setAlwaysTopWin(self.always_top_win)
+
     ############################ 设置 ############################
     def showMoresettings(self):
+        if self.setsdig is None:
+            self.setsdig = setsDialog(self.settings)
         self.setsdig.show()
+
+        self.setsdig.accepted.connect(self.setSettings)
+
         # print("setsdig!!!")
+
+    def setAlwaysTopWin(self, on_top: bool):
+        if on_top:
+            self.windowHandle().setFlag(Qt.WindowType.WindowStaysOnTopHint, True)
+        else:
+            self.windowHandle().setFlag(Qt.WindowType.WindowStaysOnTopHint, False)
+        self.update()
+
+    def setAllFont(self):
+        if self.cur_font is None:
+            return
+
+        self.setFont(self.cur_font)
+        if self.setsdig is not None:
+            self.setsdig.setFont(self.cur_font)
+            self.setsdig.update()
+        if self.comdig is not None:
+            self.comdig.setFont(self.cur_font)
+            self.comdig.update()
+        self.update()
+
+    def loadStyle(self):
+        self.setAllFont()
+        try:
+            if self.isdarktheme:
+                with open("qss/dark.qss", "r", encoding="utf-8") as f:
+                    self.theme = f.read()
+            else:
+                with open("qss/Light.qss", "r", encoding="utf-8") as f:
+                    self.theme = f.read()
+        except:
+            self.theme = ""
+        self.setStyleSheet(self.theme)
+        if self.setsdig is not None:
+            self.setsdig.setStyleSheet(self.theme)
+            self.setsdig.update()
+        if self.comdig is not None:
+            self.comdig.setStyleSheet(self.theme)
+            self.comdig.update()
+        self.update()
+
+    def setSettings(self):
+        self.readSettings()
+        self.loadStyle()
+        self.setAlwaysTopWin(self.always_top_win)
+
+        for col in range(self.tableOutput.columnCount()):
+            for row in range(self.tableOutput.rowCount()):
+                item = self.tableOutput.item(row, col)
+                if item is None:
+                    print(row, col)
+                    continue
+                try:
+                    ori_value = self.alldata[row][col]
+                except ValueError:
+                    continue
+                new_value = ori_value * 10 ** self.pointoffest[col]
+                item.setData(Qt.ItemDataRole.UserRole, new_value)
+            self.updateUnit(col)
 
     def readSettings(self):
         """从文件中加载设置项"""
         self.settings.beginGroup("MainWindow")
+        fontfamily = self.settings.value("font_family", "Microsoft YaHei UI", type=str)
+        fontsize = self.settings.value("font_size", 14, type=int)
+        self.cur_font = QFont(fontfamily, pointSize=fontsize)
         self.actionsets_reconn.setChecked(
             self.settings.value("reconn", False, type=bool)
         )
+        self.always_top_win = self.settings.value("always_top_window", False, type=bool)
+        theme = self.settings.value("theme", self.tr("Light"), type=str)
+        if theme == self.tr("Light"):
+            self.isdarktheme = False
+        elif theme == self.tr("Dark"):
+            self.isdarktheme = True
+        else:
+            settings = QSettings(
+                "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+                QSettings.NativeFormat,
+            )
+            if settings.value("AppsUseLightTheme") == 0:
+                self.isdarktheme = True
+            else:
+                self.isdarktheme = False
         self.settings.endGroup()
 
         self.settings.beginGroup("com")
@@ -183,6 +323,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.comdig.combobaud.setCurrentText(str(baudRate))
         self.settings.endGroup()
 
+        self.settings.beginGroup("Data")
+        poioff = self.settings.value("decimal_point_offset", [0, 0, 0, 0], type=list)
+        self.pointoffest = [int(x) for x in poioff]
+        self.settings.endGroup()
+
+        self.settings.beginGroup("Device")
+        self.settings.value("DISP", "")
+        self.settings.endGroup()
+
     def saveSettings(self):
         """保存设置"""
         self.settings.beginGroup("MainWindow")
@@ -193,6 +342,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.settings.setValue("Name", self.comdig.portname)
         self.settings.setValue("Baud", self.comdig.portbaud)
         self.settings.endGroup()
+
         self.settings.sync()
 
     def closeEvent(self, event):
@@ -267,33 +417,35 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 # time.sleep(0.1)
                 self.sercom.write(b"TRIG\n")
                 datas |= self.dealData(page)
-                if len(datas) >= 4:
-                    break
                 self.sercom.write(b"FETC?\n")
                 datas |= self.dealData(page)
             else:
                 self.sercom.write(b"TRIG:SOUR INT\n")
-                _ = self.sercom.readline()
-                self.sercom.write(b"FETC?\n")
                 datas |= self.dealData(page)
                 self.sercom.write(b"FETC?\n")
                 datas |= self.dealData(page)
+                self.sercom.write(b"FETC?\n")
+                datas |= self.dealData(page)
+            if len(datas) >= 4:
+                break
             times += 1
+
+        datas_sorted = {}
+        datas_sorted["Ls"] = datas["Ls"]
+        datas_sorted["Q"] = datas["Q"]
+        datas_sorted["Rdc"] = datas["Rdc"]
+        datas_sorted["Ns"] = datas["Ns"]
+
+        self.alldata.append(list(datas_sorted.values()))
 
         rowCount = self.tableOutput.rowCount()
         self.tableOutput.insertRow(rowCount)
-        itemLs = QTableWidgetItem(str(datas["Ls"]))
-        itemLs.setData(Qt.ItemDataRole.UserRole, datas["Ls"])
-        itemQ = QTableWidgetItem(str(datas["Q"]))
-        itemQ.setData(Qt.ItemDataRole.UserRole, datas["Q"])
-        itemRdc = QTableWidgetItem(str(datas["Rdc"]))
-        itemRdc.setData(Qt.ItemDataRole.UserRole, datas["Rdc"])
-        itemNs = QTableWidgetItem(str(datas["Ns"]))
-        itemNs.setData(Qt.ItemDataRole.UserRole, datas["Ns"])
-        self.tableOutput.setItem(rowCount, 0, itemLs)
-        self.tableOutput.setItem(rowCount, 1, itemQ)
-        self.tableOutput.setItem(rowCount, 2, itemRdc)
-        self.tableOutput.setItem(rowCount, 3, itemNs)
+        for i, v in enumerate(datas_sorted.values()):
+            data = v * 10 ** self.pointoffest[i]
+            item = QTableWidgetItem(str(data))
+            item.setData(Qt.ItemDataRole.UserRole, data)
+            self.tableOutput.setItem(rowCount, i, item)
+
         self.updateUnit(0)
         self.updateUnit(2)
         self.updateUnit(3)
@@ -348,6 +500,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             data = data.decode().strip()
         except:
             data = str(data)
+        if data == "" or data is None:
+            return {}
         if page in ["< LCR MEAS DISP >", "< BIN No. DISP >", "< BIN COUNT DISP >"]:
             dec = cmds.FETC.decode(data, cmds.FETC_TYPES[0])
             print(dec)
@@ -358,7 +512,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             dec = cmds.FETC.decode(data, cmds.FETC_TYPES[2])
             print(dec)
         else:
-            raise IndexError(f"{page}" + self.tr("Not the measurement interface!"))
+            raise IndexError(f"{page} " + self.tr("Not the measurement interface!"))
         ret = {}
         if "type" in dec.keys():
             if dec["type"] == "Lx":
@@ -373,7 +527,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def saveDatas(self):
         if self.tableOutput.rowCount() == 0:
             raise IndexError(self.tr("No data can be saved!"))
-        import pandas as pd
         import json
 
         savefile = QFileDialog.getSaveFileName(
