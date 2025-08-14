@@ -1,39 +1,23 @@
 from template import *
 from TH2837 import *
+from customAuto import catuo as cat
 
 import pandas as pd
 
 from PySide6.QtWidgets import (
-    QApplication,
     QMainWindow,
     QMessageBox,
     QDialog,
     QHBoxLayout,
     QLabel,
-    QComboBox,
-    QSpinBox,
     QWidget,
     QTableWidgetItem,
     QTreeWidgetItem,
     QFileDialog,
     QFontDialog,
 )
-from PySide6.QtCore import (
-    QIODevice,
-    QSettings,
-    QIODeviceBase,
-    QCoreApplication,
-    QRect,
-    Qt,
-    QObject,
-    Signal,
-    QSize,
-)
-from PySide6.QtGui import (
-    QPixmap,
-    QIcon,
-    QFont,
-)
+from PySide6.QtCore import QSettings, QCoreApplication, Qt, Signal
+from PySide6.QtGui import QPixmap, QFont
 import serial
 import serial.tools.list_ports
 
@@ -120,6 +104,8 @@ class setsDialog(QDialog, Ui_MoreSetsDialog):
         self.spin_q.setValue(poi[1])
         self.spin_rdc.setValue(poi[2])
         self.spin_ns.setValue(poi[3])
+        timeout_retries = self.settings.value("timeout_retries", 10, type=int)
+        self.spin_timeoutretry.setValue(timeout_retries)
         self.settings.endGroup()
 
     def setPageChange(self, item: QTreeWidgetItem, col):
@@ -144,14 +130,15 @@ class setsDialog(QDialog, Ui_MoreSetsDialog):
 
     def saveSettings(self):
         self.settings.beginGroup("MainWindow")
-        self.settings.setValue("font_family", self.currentFont.family())
-        self.settings.setValue("font_size", self.currentFont.pointSize())
+        self.settings.setValue("font_family", self.edit_fontfamily.text())
+        self.settings.setValue("font_size", self.spin_fontsize.value())
         self.settings.setValue("theme", self.comb_theme.currentText())
         self.settings.setValue("always_top_window", self.check_topwin.isChecked())
         self.settings.endGroup()
 
         self.settings.beginGroup("Data")
         self.settings.setValue("decimal_point_offset", self.getPointOffest())
+        self.settings.setValue("timeout_retries", self.spin_timeoutretry.value())
         self.settings.endGroup()
 
         self.settings.beginGroup("Device")
@@ -166,26 +153,32 @@ class setsDialog(QDialog, Ui_MoreSetsDialog):
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
-    counttest = 0
-    countcomponent = 0
-    counttotal = 0
-    pointoffest = [0, 0, 0, 0]
-    alldata = []
-    isdarktheme = True
-    theme = ""
-    always_top_win = False
-    font_family = ""
-    font_size = 14
-    cur_font = None
-
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.setsdig = None
-        self.sercom = serial.Serial(timeout=1)
-        self.comdig = comDialog(self.sercom)
+        self.initVars()
         self.initStatusBar()
+        self.initConnect()
+        self.initSettings()
 
+    def show(self):
+        super().show()
+        self.setAlwaysTopWin(self.always_top_win)
+
+    ############################ 初始化 ############################
+    def initSettings(self):
+        # 初始化 QSettings
+        self.settings = QSettings(
+            QSettings.Format.IniFormat, QSettings.Scope.UserScope, "AcBel", "IQC-TH2837"
+        )
+        self.readSettings()
+
+        if self.actionsets_reconn.isChecked():
+            self.sercom = self.comdig.comConnect()
+
+        self.loadStyle()
+
+    def initConnect(self):
         self.actioncom.triggered.connect(self.comdig.show)
         self.actiondisconn.triggered.connect(self.comClose)
         self.comdig.comConnected.connect(self.comStatus)
@@ -201,20 +194,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actioncompadd.triggered.connect(self.countComponent)
         self.actionsettings.triggered.connect(self.showMoresettings)
 
-        # 初始化 QSettings
-        self.settings = QSettings(
-            QSettings.Format.IniFormat, QSettings.Scope.UserScope, "AcBel", "IQC-TH2837"
-        )
-        self.readSettings()
+    def initVars(self):
+        self.setsdig = None
+        self.sercom = serial.Serial(timeout=1)
+        self.comdig = comDialog(self.sercom)
 
-        if self.actionsets_reconn.isChecked():
-            self.sercom = self.comdig.comConnect()
-
-        self.loadStyle()
-
-    def show(self):
-        super().show()
-        self.setAlwaysTopWin(self.always_top_win)
+        self.counttest = 0
+        self.countcomponent = 0
+        self.counttotal = 0
+        self.pointoffest = [0, 0, 0, 0]
+        self.alldata = []
+        self.isdarktheme = True
+        self.theme = ""
+        self.always_top_win = False
+        self.font_family = ""
+        self.font_size = 14
+        self.cur_font = None
+        self.timeout_retries = 10
 
     ############################ 设置 ############################
     def showMoresettings(self):
@@ -284,9 +280,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 new_value = ori_value * 10 ** self.pointoffest[col]
                 item.setData(Qt.ItemDataRole.UserRole, new_value)
             self.updateUnit(col)
+            self.update()
 
     def readSettings(self):
-        """从文件中加载设置项"""
+        """读取设置项"""
         self.settings.beginGroup("MainWindow")
         fontfamily = self.settings.value("font_family", "Microsoft YaHei UI", type=str)
         fontsize = self.settings.value("font_size", 14, type=int)
@@ -326,6 +323,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.settings.beginGroup("Data")
         poioff = self.settings.value("decimal_point_offset", [0, 0, 0, 0], type=list)
         self.pointoffest = [int(x) for x in poioff]
+        timeout_retries = self.settings.value("timeout_retries", 10, type=int)
+        self.timeout_retries = timeout_retries
         self.settings.endGroup()
 
         self.settings.beginGroup("Device")
@@ -399,7 +398,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         import time
 
         page = None
-        self.sercom.write(cmds.DISP.PAGEquery())
+        self.sercom.write(b"DISP:PAGE TJD\n")
+        self.sercom.write(b"DISP:PAGE?\n")
         page = self.sercom.readline().decode().strip()
         page = re.sub(r"[a-z]+", "", page)
         print(page, end="")
@@ -407,28 +407,42 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         datas = {}
         times = 0
         while len(datas) < 4:
-            if times > 30:
+            if times >= self.timeout_retries:
                 raise TimeoutError(self.tr("Data acquisition timeout!"))
-            if times % 3 == 0:
+            if times % 3 != 0:
+                print("TRIG:SOUR BUS")
                 self.sercom.write(b"TRIG:SOUR BUS\n")
                 _ = self.sercom.readline()
-                self.sercom.write(b"TRIG\n")
-                datas |= self.dealData(page)
                 # time.sleep(0.1)
+                print("FETC?")
+                self.sercom.write(b"FETC?\n")
+                datas |= self.dealData(page)
+                print("TRIG")
                 self.sercom.write(b"TRIG\n")
                 datas |= self.dealData(page)
+                if len(datas) >= 4:
+                    self.MainstatusBar.showMessage(self.tr("数据获取完成"))
+                    break
+                print("FETC?")
                 self.sercom.write(b"FETC?\n")
                 datas |= self.dealData(page)
             else:
+                print("TRIG:SOUR INT")
                 self.sercom.write(b"TRIG:SOUR INT\n")
                 datas |= self.dealData(page)
+                print("FETC?")
                 self.sercom.write(b"FETC?\n")
                 datas |= self.dealData(page)
                 self.sercom.write(b"FETC?\n")
                 datas |= self.dealData(page)
+
             if len(datas) >= 4:
+                self.MainstatusBar.showMessage(self.tr("数据获取完成"))
                 break
             times += 1
+            self.MainstatusBar.showMessage(
+                self.tr("数据获取重试次数:") + f"{times}/{self.timeout_retries}"
+            )
 
         datas_sorted = {}
         datas_sorted["Ls"] = datas["Ls"]
@@ -500,15 +514,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             data = data.decode().strip()
         except:
             data = str(data)
-        if data == "" or data is None:
-            return {}
         if page in ["< LCR MEAS DISP >", "< BIN No. DISP >", "< BIN COUNT DISP >"]:
+            if data == "" or data is None:
+                return {}
             dec = cmds.FETC.decode(data, cmds.FETC_TYPES[0])
             print(dec)
         elif page in ["< LIST SWEEP DISP >"]:
+            if data == "" or data is None:
+                return {}
             dec = cmds.FETC.decode(data, cmds.FETC_TYPES[1])
             print(dec)
         elif page in ["< TRANS MEAS DISP >", "< TRANS JUDGE DISP >"]:
+            if data == "" or data is None:
+                return {}
             dec = cmds.FETC.decode(data, cmds.FETC_TYPES[2])
             print(dec)
         else:
@@ -591,3 +609,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.label_countcomponent.setText(str(self.countcomponent))
         self.label_counttest.setText(str(self.counttest))
         self.label_counttotal.setText(str(self.counttotal))
+
+    ########################## 录入数据 #########################
+    def p():
+        pass

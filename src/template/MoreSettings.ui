@@ -94,8 +94,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>452</width>
-          <height>289</height>
+          <width>435</width>
+          <height>291</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
@@ -219,15 +219,15 @@
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
              <layout class="QVBoxLayout" name="verticalLayout_3">
-              <item alignment="Qt::AlignmentFlag::AlignVCenter">
-               <widget class="QLabel" name="label_4">
-                <property name="text">
-                 <string>小数点偏移:</string>
-                </property>
-               </widget>
-              </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_5">
+                <item>
+                 <widget class="QLabel" name="label_4">
+                  <property name="text">
+                   <string>小数点偏移:</string>
+                  </property>
+                 </widget>
+                </item>
                 <item alignment="Qt::AlignmentFlag::AlignRight">
                  <widget class="QLabel" name="label_5">
                   <property name="text">
@@ -293,6 +293,33 @@
                   </property>
                   <property name="maximum">
                    <number>10</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <item>
+                 <widget class="QLabel" name="label_9">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>超时重试次数:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="spin_timeoutretry">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
                   </property>
                  </widget>
                 </item>

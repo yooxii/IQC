@@ -57,7 +57,7 @@ class Ui_MoreSetsDialog(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 452, 289))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 435, 291))
         self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.groupBox = QGroupBox(self.scrollAreaWidgetContents)
@@ -147,13 +147,13 @@ class Ui_MoreSetsDialog(object):
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.verticalLayout_3 = QVBoxLayout()
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.horizontalLayout_5 = QHBoxLayout()
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.label_4 = QLabel(self.groupBox_2)
         self.label_4.setObjectName(u"label_4")
 
-        self.verticalLayout_3.addWidget(self.label_4, 0, Qt.AlignmentFlag.AlignVCenter)
+        self.horizontalLayout_5.addWidget(self.label_4)
 
-        self.horizontalLayout_5 = QHBoxLayout()
-        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.label_5 = QLabel(self.groupBox_2)
         self.label_5.setObjectName(u"label_5")
 
@@ -204,6 +204,31 @@ class Ui_MoreSetsDialog(object):
 
 
         self.verticalLayout_3.addLayout(self.horizontalLayout_5)
+
+        self.horizontalLayout_7 = QHBoxLayout()
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.label_9 = QLabel(self.groupBox_2)
+        self.label_9.setObjectName(u"label_9")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.label_9.sizePolicy().hasHeightForWidth())
+        self.label_9.setSizePolicy(sizePolicy2)
+
+        self.horizontalLayout_7.addWidget(self.label_9)
+
+        self.spin_timeoutretry = QSpinBox(self.groupBox_2)
+        self.spin_timeoutretry.setObjectName(u"spin_timeoutretry")
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.spin_timeoutretry.sizePolicy().hasHeightForWidth())
+        self.spin_timeoutretry.setSizePolicy(sizePolicy3)
+
+        self.horizontalLayout_7.addWidget(self.spin_timeoutretry)
+
+
+        self.verticalLayout_3.addLayout(self.horizontalLayout_7)
 
 
         self.verticalLayout_4.addLayout(self.verticalLayout_3)
@@ -292,6 +317,7 @@ class Ui_MoreSetsDialog(object):
         self.label_6.setText(QCoreApplication.translate("MoreSetsDialog", u"Q", None))
         self.label_7.setText(QCoreApplication.translate("MoreSetsDialog", u"Rdc", None))
         self.label_8.setText(QCoreApplication.translate("MoreSetsDialog", u"Ns", None))
+        self.label_9.setText(QCoreApplication.translate("MoreSetsDialog", u"\u8d85\u65f6\u91cd\u8bd5\u6b21\u6570:", None))
         self.groupBox_3.setTitle(QCoreApplication.translate("MoreSetsDialog", u"\u4eea\u5668", None))
         self.label_10.setText(QCoreApplication.translate("MoreSetsDialog", u"\u754c\u9762:", None))
         self.comb_disp.setItemText(0, QCoreApplication.translate("MoreSetsDialog", u"\u53d8\u538b\u5668\u5224\u522b\u663e\u793a", None))

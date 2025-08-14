@@ -5,15 +5,13 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "matplotlib>=3.10.3",
     "numpy>=2.3.1",
     "openpyxl>=3.1.5",
+    "pandas>=2.3.1",
     "pyautogui>=0.9.54",
     "pyinstaller>=6.15.0",
     "pyserial>=3.5",
     "pyside6>=6.9.1",
-    "scipy>=1.16.0",
-    "seaborn>=0.13.2",
 ]
 
 [[tool.uv.index]]
