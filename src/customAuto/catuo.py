@@ -91,6 +91,7 @@ def moveTo_image(
             image_path, minSearchTime=timeout, confidence=confidence
         )
     except Exception as e:
+        error_message += f"Not found image '{image_path}' on screen."
         print(error_message)
         return False
 
