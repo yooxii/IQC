@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MoreSettingsJfyrSJ.ui'
+## Form generated from reading UI file 'MoreSettingsjOKEAR.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.9.1
 ##
@@ -101,7 +101,7 @@ class Ui_MoreSetsDialog(object):
         sizePolicy1.setHeightForWidth(self.spin_fontsize.sizePolicy().hasHeightForWidth())
         self.spin_fontsize.setSizePolicy(sizePolicy1)
         self.spin_fontsize.setMaximum(50)
-        self.spin_fontsize.setValue(14)
+        self.spin_fontsize.setValue(9)
 
         self.horizontalLayout_2.addWidget(self.spin_fontsize)
 
@@ -224,8 +224,21 @@ class Ui_MoreSetsDialog(object):
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.spin_timeoutretry.sizePolicy().hasHeightForWidth())
         self.spin_timeoutretry.setSizePolicy(sizePolicy3)
+        self.spin_timeoutretry.setValue(30)
 
         self.horizontalLayout_7.addWidget(self.spin_timeoutretry)
+
+        self.label_11 = QLabel(self.groupBox_2)
+        self.label_11.setObjectName(u"label_11")
+
+        self.horizontalLayout_7.addWidget(self.label_11)
+
+        self.spin_comptest = QSpinBox(self.groupBox_2)
+        self.spin_comptest.setObjectName(u"spin_comptest")
+        self.spin_comptest.setMinimum(1)
+        self.spin_comptest.setValue(5)
+
+        self.horizontalLayout_7.addWidget(self.spin_comptest)
 
 
         self.verticalLayout_3.addLayout(self.horizontalLayout_7)
@@ -318,6 +331,7 @@ class Ui_MoreSetsDialog(object):
         self.label_7.setText(QCoreApplication.translate("MoreSetsDialog", u"Rdc", None))
         self.label_8.setText(QCoreApplication.translate("MoreSetsDialog", u"Ns", None))
         self.label_9.setText(QCoreApplication.translate("MoreSetsDialog", u"\u8d85\u65f6\u91cd\u8bd5\u6b21\u6570:", None))
+        self.label_11.setText(QCoreApplication.translate("MoreSetsDialog", u"\u96f6\u4ef6\u6d4b\u8bd5\u6b21\u6570:", None))
         self.groupBox_3.setTitle(QCoreApplication.translate("MoreSetsDialog", u"\u4eea\u5668", None))
         self.label_10.setText(QCoreApplication.translate("MoreSetsDialog", u"\u754c\u9762:", None))
         self.comb_disp.setItemText(0, QCoreApplication.translate("MoreSetsDialog", u"\u53d8\u538b\u5668\u5224\u522b\u663e\u793a", None))

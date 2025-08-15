@@ -20,9 +20,9 @@ from PySide6.QtWidgets import (QAbstractItemView, QApplication, QButtonGroup, QC
     QGridLayout, QGroupBox, QHBoxLayout, QHeaderView,
     QLabel, QLayout, QMainWindow, QMenu,
     QMenuBar, QPushButton, QRadioButton, QSizePolicy,
-    QSpacerItem, QStatusBar, QTableWidget, QTableWidgetItem,
-    QVBoxLayout, QWidget)
-from . import iqc_rc
+    QSpacerItem, QSpinBox, QStatusBar, QTableWidget,
+    QTableWidgetItem, QVBoxLayout, QWidget)
+import iqc_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -65,84 +65,6 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout_4 = QGridLayout(self.centralwidget)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
-        self.groupBox = QGroupBox(self.centralwidget)
-        self.groupBox.setObjectName(u"groupBox")
-        self.groupBox.setMaximumSize(QSize(16777215, 120))
-        self.verticalLayout = QVBoxLayout(self.groupBox)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.gridLayout_2 = QGridLayout()
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.rBtnLs = QRadioButton(self.groupBox)
-        self.buttonGroup = QButtonGroup(MainWindow)
-        self.buttonGroup.setObjectName(u"buttonGroup")
-        self.buttonGroup.addButton(self.rBtnLs)
-        self.rBtnLs.setObjectName(u"rBtnLs")
-        self.rBtnLs.setMaximumSize(QSize(16777215, 20))
-        self.rBtnLs.setChecked(True)
-
-        self.gridLayout_2.addWidget(self.rBtnLs, 0, 0, 1, 1)
-
-        self.rBtnQ = QRadioButton(self.groupBox)
-        self.buttonGroup.addButton(self.rBtnQ)
-        self.rBtnQ.setObjectName(u"rBtnQ")
-        self.rBtnQ.setMaximumSize(QSize(16777215, 20))
-
-        self.gridLayout_2.addWidget(self.rBtnQ, 0, 1, 1, 1)
-
-        self.rBtnRdc = QRadioButton(self.groupBox)
-        self.buttonGroup.addButton(self.rBtnRdc)
-        self.rBtnRdc.setObjectName(u"rBtnRdc")
-        self.rBtnRdc.setMaximumSize(QSize(16777215, 20))
-
-        self.gridLayout_2.addWidget(self.rBtnRdc, 0, 2, 1, 1)
-
-        self.rBtnNs = QRadioButton(self.groupBox)
-        self.buttonGroup.addButton(self.rBtnNs)
-        self.rBtnNs.setObjectName(u"rBtnNs")
-        self.rBtnNs.setMaximumSize(QSize(16777215, 20))
-
-        self.gridLayout_2.addWidget(self.rBtnNs, 0, 3, 1, 1)
-
-
-        self.verticalLayout.addLayout(self.gridLayout_2)
-
-        self.horizontalLayout_2 = QHBoxLayout()
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.cboLs = QComboBox(self.groupBox)
-        self.cboLs.addItem("")
-        self.cboLs.addItem("")
-        self.cboLs.addItem("")
-        self.cboLs.setObjectName(u"cboLs")
-
-        self.horizontalLayout_2.addWidget(self.cboLs)
-
-        self.cboQ = QComboBox(self.groupBox)
-        self.cboQ.addItem("")
-        self.cboQ.setObjectName(u"cboQ")
-
-        self.horizontalLayout_2.addWidget(self.cboQ)
-
-        self.cboRdc = QComboBox(self.groupBox)
-        self.cboRdc.addItem("")
-        self.cboRdc.addItem("")
-        self.cboRdc.setObjectName(u"cboRdc")
-
-        self.horizontalLayout_2.addWidget(self.cboRdc)
-
-        self.cboNs = QComboBox(self.groupBox)
-        self.cboNs.addItem("")
-        self.cboNs.addItem("")
-        self.cboNs.addItem("")
-        self.cboNs.setObjectName(u"cboNs")
-
-        self.horizontalLayout_2.addWidget(self.cboNs)
-
-
-        self.verticalLayout.addLayout(self.horizontalLayout_2)
-
-
-        self.gridLayout_4.addWidget(self.groupBox, 9, 1, 1, 1)
-
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
         self.btnGetdatas = QPushButton(self.centralwidget)
@@ -151,11 +73,11 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.btnGetdatas, 0, 0, 1, 1)
 
-        self.btnGetstop = QPushButton(self.centralwidget)
-        self.btnGetstop.setObjectName(u"btnGetstop")
-        self.btnGetstop.setMinimumSize(QSize(0, 40))
+        self.btnEnterdatas = QPushButton(self.centralwidget)
+        self.btnEnterdatas.setObjectName(u"btnEnterdatas")
+        self.btnEnterdatas.setMinimumSize(QSize(0, 40))
 
-        self.gridLayout.addWidget(self.btnGetstop, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.btnEnterdatas, 0, 1, 1, 1)
 
 
         self.gridLayout_4.addLayout(self.gridLayout, 10, 1, 1, 1)
@@ -276,6 +198,149 @@ class Ui_MainWindow(object):
 
         self.gridLayout_4.addItem(self.horizontalSpacer, 7, 2, 2, 1)
 
+        self.horizontalLayout_3 = QHBoxLayout()
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.groupBox = QGroupBox(self.centralwidget)
+        self.groupBox.setObjectName(u"groupBox")
+        self.groupBox.setMaximumSize(QSize(16777215, 120))
+        self.verticalLayout = QVBoxLayout(self.groupBox)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.gridLayout_2 = QGridLayout()
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.rBtnLs = QRadioButton(self.groupBox)
+        self.buttonGroup = QButtonGroup(MainWindow)
+        self.buttonGroup.setObjectName(u"buttonGroup")
+        self.buttonGroup.addButton(self.rBtnLs)
+        self.rBtnLs.setObjectName(u"rBtnLs")
+        self.rBtnLs.setMaximumSize(QSize(16777215, 20))
+        self.rBtnLs.setChecked(True)
+
+        self.gridLayout_2.addWidget(self.rBtnLs, 0, 0, 1, 1)
+
+        self.rBtnQ = QRadioButton(self.groupBox)
+        self.buttonGroup.addButton(self.rBtnQ)
+        self.rBtnQ.setObjectName(u"rBtnQ")
+        self.rBtnQ.setMaximumSize(QSize(16777215, 20))
+
+        self.gridLayout_2.addWidget(self.rBtnQ, 0, 1, 1, 1)
+
+        self.rBtnRdc = QRadioButton(self.groupBox)
+        self.buttonGroup.addButton(self.rBtnRdc)
+        self.rBtnRdc.setObjectName(u"rBtnRdc")
+        self.rBtnRdc.setMaximumSize(QSize(16777215, 20))
+
+        self.gridLayout_2.addWidget(self.rBtnRdc, 0, 2, 1, 1)
+
+        self.rBtnNs = QRadioButton(self.groupBox)
+        self.buttonGroup.addButton(self.rBtnNs)
+        self.rBtnNs.setObjectName(u"rBtnNs")
+        self.rBtnNs.setMaximumSize(QSize(16777215, 20))
+
+        self.gridLayout_2.addWidget(self.rBtnNs, 0, 3, 1, 1)
+
+
+        self.verticalLayout.addLayout(self.gridLayout_2)
+
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.cboLs = QComboBox(self.groupBox)
+        self.cboLs.addItem("")
+        self.cboLs.addItem("")
+        self.cboLs.addItem("")
+        self.cboLs.setObjectName(u"cboLs")
+
+        self.horizontalLayout_2.addWidget(self.cboLs)
+
+        self.cboQ = QComboBox(self.groupBox)
+        self.cboQ.addItem("")
+        self.cboQ.setObjectName(u"cboQ")
+
+        self.horizontalLayout_2.addWidget(self.cboQ)
+
+        self.cboRdc = QComboBox(self.groupBox)
+        self.cboRdc.addItem("")
+        self.cboRdc.addItem("")
+        self.cboRdc.setObjectName(u"cboRdc")
+
+        self.horizontalLayout_2.addWidget(self.cboRdc)
+
+        self.cboNs = QComboBox(self.groupBox)
+        self.cboNs.addItem("")
+        self.cboNs.addItem("")
+        self.cboNs.addItem("")
+        self.cboNs.setObjectName(u"cboNs")
+
+        self.horizontalLayout_2.addWidget(self.cboNs)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
+
+
+        self.horizontalLayout_3.addWidget(self.groupBox)
+
+        self.groupBox_2 = QGroupBox(self.centralwidget)
+        self.groupBox_2.setObjectName(u"groupBox_2")
+        self.verticalLayout_3 = QVBoxLayout(self.groupBox_2)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.label = QLabel(self.groupBox_2)
+        self.label.setObjectName(u"label")
+        self.label.setMaximumSize(QSize(60, 16777215))
+
+        self.horizontalLayout_4.addWidget(self.label)
+
+        self.comb_compno = QComboBox(self.groupBox_2)
+        self.comb_compno.addItem("")
+        self.comb_compno.setObjectName(u"comb_compno")
+
+        self.horizontalLayout_4.addWidget(self.comb_compno)
+
+
+        self.verticalLayout_3.addLayout(self.horizontalLayout_4)
+
+        self.horizontalLayout_5 = QHBoxLayout()
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.label_2 = QLabel(self.groupBox_2)
+        self.label_2.setObjectName(u"label_2")
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
+        self.label_2.setSizePolicy(sizePolicy3)
+        self.label_2.setMaximumSize(QSize(60, 16777215))
+
+        self.horizontalLayout_5.addWidget(self.label_2)
+
+        self.spin_comprowst = QSpinBox(self.groupBox_2)
+        self.spin_comprowst.setObjectName(u"spin_comprowst")
+
+        self.horizontalLayout_5.addWidget(self.spin_comprowst)
+
+        self.label_4 = QLabel(self.groupBox_2)
+        self.label_4.setObjectName(u"label_4")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
+        self.label_4.setSizePolicy(sizePolicy4)
+
+        self.horizontalLayout_5.addWidget(self.label_4, 0, Qt.AlignmentFlag.AlignVCenter)
+
+        self.spin_comprowend = QSpinBox(self.groupBox_2)
+        self.spin_comprowend.setObjectName(u"spin_comprowend")
+
+        self.horizontalLayout_5.addWidget(self.spin_comprowend)
+
+
+        self.verticalLayout_3.addLayout(self.horizontalLayout_5)
+
+
+        self.horizontalLayout_3.addWidget(self.groupBox_2)
+
+
+        self.gridLayout_4.addLayout(self.horizontalLayout_3, 9, 1, 1, 1)
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -292,7 +357,7 @@ class Ui_MainWindow(object):
         self.MainstatusBar = QStatusBar(MainWindow)
         self.MainstatusBar.setObjectName(u"MainstatusBar")
         MainWindow.setStatusBar(self.MainstatusBar)
-        QWidget.setTabOrder(self.btnGetdatas, self.btnGetstop)
+        QWidget.setTabOrder(self.btnGetdatas, self.btnEnterdatas)
 
         self.menubar.addAction(self.menu_0.menuAction())
         self.menubar.addAction(self.menu_1.menuAction())
@@ -348,7 +413,35 @@ class Ui_MainWindow(object):
         self.actionreset.setText(QCoreApplication.translate("MainWindow", u"\u91cd\u7f6e", None))
         self.actioncompadd.setText(QCoreApplication.translate("MainWindow", u"\u96f6\u4ef6\u6570\u589e\u4e00", None))
         self.actionsettings.setText(QCoreApplication.translate("MainWindow", u"\u66f4\u591a\u8bbe\u7f6e...", None))
-        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u5f55\u5165\u6570\u636e\u7c7b\u578b", None))
+#if QT_CONFIG(statustip)
+        self.btnGetdatas.setStatusTip(QCoreApplication.translate("MainWindow", u"\u4eceTH2837\u4e2d\u83b7\u53d6\u6570\u636e", None))
+#endif // QT_CONFIG(statustip)
+        self.btnGetdatas.setText(QCoreApplication.translate("MainWindow", u"\u83b7\u53d6\u6570\u636e", None))
+#if QT_CONFIG(statustip)
+        self.btnEnterdatas.setStatusTip(QCoreApplication.translate("MainWindow", u"\u5c06\u6570\u636e\u5f55\u5165\u7cfb\u7edf", None))
+#endif // QT_CONFIG(statustip)
+        self.btnEnterdatas.setText(QCoreApplication.translate("MainWindow", u"\u5f55\u5165\u6570\u636e", None))
+        ___qtablewidgetitem = self.tableOutput.horizontalHeaderItem(0)
+        ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Ls", None));
+        ___qtablewidgetitem1 = self.tableOutput.horizontalHeaderItem(1)
+        ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Q", None));
+        ___qtablewidgetitem2 = self.tableOutput.horizontalHeaderItem(2)
+        ___qtablewidgetitem2.setText(QCoreApplication.translate("MainWindow", u"Rdc", None));
+        ___qtablewidgetitem3 = self.tableOutput.horizontalHeaderItem(3)
+        ___qtablewidgetitem3.setText(QCoreApplication.translate("MainWindow", u"Ns", None));
+#if QT_CONFIG(statustip)
+        self.tableOutput.setStatusTip(QCoreApplication.translate("MainWindow", u"\u6570\u636e\u663e\u793a\u533a", None))
+#endif // QT_CONFIG(statustip)
+        self.label_1.setText(QCoreApplication.translate("MainWindow", u"\u6d4b\u8bd5\u8ba1\u6570:", None))
+#if QT_CONFIG(statustip)
+        self.label_counttest.setStatusTip("")
+#endif // QT_CONFIG(statustip)
+        self.label_counttest.setText(QCoreApplication.translate("MainWindow", u"0", None))
+        self.btn_countcomponent.setText(QCoreApplication.translate("MainWindow", u"\u96f6\u4ef6\u8ba1\u6570:", None))
+        self.label_countcomponent.setText(QCoreApplication.translate("MainWindow", u"0", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"\u603b\u8ba1\u6570:", None))
+        self.label_counttotal.setText(QCoreApplication.translate("MainWindow", u"0", None))
+        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u6570\u636e\u7c7b\u522b\u548c\u5355\u4f4d", None))
 #if QT_CONFIG(statustip)
         self.rBtnLs.setStatusTip(QCoreApplication.translate("MainWindow", u"\u7535\u611f\u91cf", None))
 #endif // QT_CONFIG(statustip)
@@ -378,34 +471,12 @@ class Ui_MainWindow(object):
         self.cboNs.setItemText(1, QCoreApplication.translate("MainWindow", u"mT", None))
         self.cboNs.setItemText(2, QCoreApplication.translate("MainWindow", u"T", None))
 
-#if QT_CONFIG(statustip)
-        self.btnGetdatas.setStatusTip(QCoreApplication.translate("MainWindow", u"\u4eceTH2837\u4e2d\u83b7\u53d6\u6570\u636e", None))
-#endif // QT_CONFIG(statustip)
-        self.btnGetdatas.setText(QCoreApplication.translate("MainWindow", u"\u83b7\u53d6\u6570\u636e", None))
-#if QT_CONFIG(statustip)
-        self.btnGetstop.setStatusTip(QCoreApplication.translate("MainWindow", u"\u5c06\u6570\u636e\u5f55\u5165\u7cfb\u7edf", None))
-#endif // QT_CONFIG(statustip)
-        self.btnGetstop.setText(QCoreApplication.translate("MainWindow", u"\u5f55\u5165\u6570\u636e", None))
-        ___qtablewidgetitem = self.tableOutput.horizontalHeaderItem(0)
-        ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Ls", None));
-        ___qtablewidgetitem1 = self.tableOutput.horizontalHeaderItem(1)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Q", None));
-        ___qtablewidgetitem2 = self.tableOutput.horizontalHeaderItem(2)
-        ___qtablewidgetitem2.setText(QCoreApplication.translate("MainWindow", u"Rdc", None));
-        ___qtablewidgetitem3 = self.tableOutput.horizontalHeaderItem(3)
-        ___qtablewidgetitem3.setText(QCoreApplication.translate("MainWindow", u"Ns", None));
-#if QT_CONFIG(statustip)
-        self.tableOutput.setStatusTip(QCoreApplication.translate("MainWindow", u"\u6570\u636e\u663e\u793a\u533a", None))
-#endif // QT_CONFIG(statustip)
-        self.label_1.setText(QCoreApplication.translate("MainWindow", u"\u6d4b\u8bd5\u8ba1\u6570:", None))
-#if QT_CONFIG(statustip)
-        self.label_counttest.setStatusTip("")
-#endif // QT_CONFIG(statustip)
-        self.label_counttest.setText(QCoreApplication.translate("MainWindow", u"0", None))
-        self.btn_countcomponent.setText(QCoreApplication.translate("MainWindow", u"\u96f6\u4ef6\u8ba1\u6570:", None))
-        self.label_countcomponent.setText(QCoreApplication.translate("MainWindow", u"0", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"\u603b\u8ba1\u6570:", None))
-        self.label_counttotal.setText(QCoreApplication.translate("MainWindow", u"0", None))
+        self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"\u9009\u62e9\u5f55\u5165\u7684\u6570\u636e", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"\u96f6\u4ef6\u7f16\u53f7:", None))
+        self.comb_compno.setItemText(0, QCoreApplication.translate("MainWindow", u"-", None))
+
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"\u8303\u56f4:", None))
+        self.label_4.setText(QCoreApplication.translate("MainWindow", u"~", None))
         self.menu_1.setTitle(QCoreApplication.translate("MainWindow", u"\u8fde\u63a5", None))
         self.menu_0.setTitle(QCoreApplication.translate("MainWindow", u"\u6587\u4ef6", None))
         self.menu_3.setTitle(QCoreApplication.translate("MainWindow", u"\u5e2e\u52a9", None))

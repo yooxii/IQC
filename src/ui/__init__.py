@@ -15,9 +15,10 @@ from PySide6.QtWidgets import (
     QTreeWidgetItem,
     QFileDialog,
     QFontDialog,
+    QTableWidgetSelectionRange,
 )
-from PySide6.QtCore import QSettings, QCoreApplication, Qt, Signal
-from PySide6.QtGui import QPixmap, QFont
+from PySide6.QtCore import QSettings, QCoreApplication, Qt, Signal, QRect
+from PySide6.QtGui import QPixmap, QFont, QScreen, QGuiApplication
 import serial
 import serial.tools.list_ports
 
@@ -106,6 +107,8 @@ class setsDialog(QDialog, Ui_MoreSetsDialog):
         self.spin_ns.setValue(poi[3])
         timeout_retries = self.settings.value("timeout_retries", 10, type=int)
         self.spin_timeoutretry.setValue(timeout_retries)
+        comptest = self.settings.value("component_test_times", 5, type=int)
+        self.spin_comptest.setValue(comptest)
         self.settings.endGroup()
 
     def setPageChange(self, item: QTreeWidgetItem, col):
@@ -139,6 +142,7 @@ class setsDialog(QDialog, Ui_MoreSetsDialog):
         self.settings.beginGroup("Data")
         self.settings.setValue("decimal_point_offset", self.getPointOffest())
         self.settings.setValue("timeout_retries", self.spin_timeoutretry.value())
+        self.settings.setValue("component_test_times", self.spin_comptest.value())
         self.settings.endGroup()
 
         self.settings.beginGroup("Device")
@@ -150,6 +154,25 @@ class setsDialog(QDialog, Ui_MoreSetsDialog):
     def accept(self):
         self.saveSettings()
         return super().accept()
+
+
+class commandWindow(QMainWindow, Ui_commandWindow):
+    def __init__(self, com: serial.Serial):
+        super().__init__()
+        self.setupUi(self)
+        self.com = com
+
+        self.btn_send.clicked.connect(self.sendCommand)
+
+    def sendCommand(self):
+        cmd = self.edit_send.text()
+        if cmd is None or cmd == "":
+            return
+        self.textBrowser.append(f">>>{cmd}\\n")
+        self.com.write(cmd.encode())
+        recv = self.com.readline().decode()
+        self.textBrowser.append(f"{recv}")
+        self.edit_send.clear()
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -184,26 +207,36 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.comdig.comConnected.connect(self.comStatus)
 
         self.btnGetdatas.clicked.connect(self.getDatas)
+        self.btnEnterdatas.clicked.connect(self.enterDatas)
         self.actionreset.triggered.connect(self.tableOutput.clearFocus)
         self.cboLs.currentTextChanged.connect(lambda: self.updateUnit(0))
         self.cboRdc.currentTextChanged.connect(lambda: self.updateUnit(2))
         self.cboNs.currentTextChanged.connect(lambda: self.updateUnit(3))
+        self.comb_compno.currentTextChanged.connect(self.setDataRange)
+        self.buttonGroup.buttonToggled.connect(self.selectDatas)
+        self.comb_compno.currentTextChanged.connect(self.selectDatas)
+        self.spin_comprowst.valueChanged.connect(self.selectDatas)
+        self.spin_comprowend.valueChanged.connect(self.selectDatas)
 
         self.actionsavedatas.triggered.connect(self.saveDatas)
         self.actionreset.triggered.connect(self.reset)
         self.actioncompadd.triggered.connect(self.countComponent)
         self.actionsettings.triggered.connect(self.showMoresettings)
+        self.actioncmdwin.triggered.connect(self.cmdWinShow)
 
     def initVars(self):
         self.setsdig = None
         self.sercom = serial.Serial(timeout=1)
         self.comdig = comDialog(self.sercom)
+        self.cmdWin = None
 
         self.counttest = 0
         self.countcomponent = 0
         self.counttotal = 0
         self.pointoffest = [0, 0, 0, 0]
         self.alldata = []
+        self.comps_loc = []
+        self.comp = []
         self.isdarktheme = True
         self.theme = ""
         self.always_top_win = False
@@ -211,6 +244,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.font_size = 14
         self.cur_font = None
         self.timeout_retries = 10
+        self.comptest = 5
 
     ############################ 设置 ############################
     def showMoresettings(self):
@@ -325,6 +359,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pointoffest = [int(x) for x in poioff]
         timeout_retries = self.settings.value("timeout_retries", 10, type=int)
         self.timeout_retries = timeout_retries
+        comptest = self.settings.value("component_test_times", 5, type=int)
+        self.comptest = comptest
+        unit = self.settings.value("unit", ["uH", "-", "Ω", "T"], type=list)
+        self.cboLs.setCurrentText(unit[0])
+        self.cboRdc.setCurrentText(unit[2])
+        self.cboNs.setCurrentText(unit[3])
         self.settings.endGroup()
 
         self.settings.beginGroup("Device")
@@ -344,9 +384,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.settings.sync()
 
+    def saveUnitSets(self):
+        self.settings.beginGroup("Data")
+        unit = []
+        unit.append(self.cboLs.currentText())
+        unit.append(self.cboQ.currentText())
+        unit.append(self.cboRdc.currentText())
+        unit.append(self.cboNs.currentText())
+        self.settings.setValue("unit", unit)
+        self.settings.endGroup()
+
+        self.settings.sync()
+
     def closeEvent(self, event):
         self.saveSettings()
         self.sercom.close()
+        if self.cmdWin:
+            self.cmdWin.close()
         event.accept()
 
     ############################ 状态栏 ##########################
@@ -395,10 +449,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     ############################ 数据处理 ########################
     def getDatas(self):
         import re
-        import time
 
         page = None
         self.sercom.write(b"DISP:PAGE TJD\n")
+        _ = self.sercom.readline()
         self.sercom.write(b"DISP:PAGE?\n")
         page = self.sercom.readline().decode().strip()
         page = re.sub(r"[a-z]+", "", page)
@@ -459,6 +513,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             item = QTableWidgetItem(str(data))
             item.setData(Qt.ItemDataRole.UserRole, data)
             self.tableOutput.setItem(rowCount, i, item)
+            self.tableOutput.scrollToBottom()
 
         self.updateUnit(0)
         self.updateUnit(2)
@@ -466,7 +521,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.counttest += 1
         self.counttotal += 1
-        if self.counttest >= 5:
+        if self.counttest >= self.comptest:
+            self.comps_loc.append([rowCount - self.counttest + 1, self.counttest])
+            self.comb_compno.addItem(f"{len(self.comps_loc)}")
             self.counttest = 0
             self.countcomponent += 1
         self.countUpdate()
@@ -507,6 +564,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if decimals < 0:
                 decimals = 0
             item.setText(f"{data:.{decimals}f}")
+        self.saveUnitSets()
 
     def dealData(self, page):
         data = self.sercom.readline()
@@ -582,6 +640,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.tableOutput.removeRow(0)
         self.countcomponent = self.counttest = self.counttotal = 0
         self.countUpdate()
+        self.comp.clear()
+        self.comps_loc.clear()
+        self.alldata.clear()
+        self.comb_compno.clear()
+        self.comb_compno.addItem("-")
 
     ############################ 计数 ###########################
     def countComponent(self):
@@ -599,8 +662,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             mess.setDefaultButton(QMessageBox.StandardButton.No)
             if mess.exec() == QMessageBox.StandardButton.No:
                 return
-        elif self.counttest >= 5:
+        elif self.counttest >= self.comptest:
             pass
+        rowCount = self.tableOutput.rowCount()
+        self.comps_loc.append([rowCount - self.counttest, self.counttest])
+        self.comb_compno.addItem(f"{len(self.comps_loc)}")
         self.counttest = 0
         self.countcomponent += 1
         self.countUpdate()
@@ -611,5 +677,69 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.label_counttotal.setText(str(self.counttotal))
 
     ########################## 录入数据 #########################
-    def p():
-        pass
+    def setDataRange(self, text):
+        if text == "-":
+            self.spin_comprowst.setMinimum(0)
+            self.spin_comprowst.setMaximum(0)
+            self.spin_comprowst.setValue(0)
+            self.spin_comprowend.setMinimum(0)
+            self.spin_comprowend.setMaximum(0)
+            self.spin_comprowend.setValue(0)
+            self.tableOutput.clearSelection()
+            self.comp.clear()
+            return
+        print(text)
+        ran = self.comps_loc[int(text) - 1].copy()
+        ran[0] += 1
+        print(ran)
+        self.spin_comprowst.setMinimum(ran[0])
+        self.spin_comprowst.setMaximum(ran[0] + ran[1] - 1)
+        self.spin_comprowst.setValue(ran[0])
+        self.spin_comprowend.setMinimum(ran[0])
+        self.spin_comprowend.setMaximum(ran[0] + ran[1] - 1)
+        self.spin_comprowend.setValue(ran[0] + ran[1] - 1)
+
+    def selectDatas(self):
+        if self.comb_compno.currentText() == "-":
+            return
+        start = self.spin_comprowst.value() - 1
+        end = self.spin_comprowend.value() - 1
+        if self.rBtnLs.isChecked():
+            col = 0
+        elif self.rBtnQ.isChecked():
+            col = 1
+        elif self.rBtnRdc.isChecked():
+            col = 2
+        else:
+            col = 3
+        print(start, end, col)
+        ran = QTableWidgetSelectionRange(start, col, end, col)
+        self.tableOutput.clearSelection()
+        self.tableOutput.setRangeSelected(ran, True)
+        item = self.tableOutput.item(end, col)
+        self.tableOutput.scrollToItem(item)
+
+        self.comp.clear()
+        for r in range(start, end + 1):
+            it = self.tableOutput.item(r, col)
+            self.comp.append(it.text())
+
+    def enterDatas(self):
+        from customAuto import AutoEnterData
+
+        print(self.comps_loc)
+        print(self.comp)
+        ato = AutoEnterData()
+
+        win_poi = self.geometry()
+        screen = QGuiApplication.primaryScreen()
+        scr_poi = screen.geometry()
+        self.move(scr_poi.right() - 50, scr_poi.top())
+        ato.singleComponent(self.comp)
+        self.setGeometry(win_poi)
+
+    ############################ 其他 ##########################
+    def cmdWinShow(self):
+        if not self.cmdWin:
+            self.cmdWin = commandWindow(self.sercom)
+        self.cmdWin.show()

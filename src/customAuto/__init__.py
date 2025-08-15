@@ -1,6 +1,5 @@
-import catuo
-from catuo import *
-from PIL import Image
+from . import catuo
+from .catuo import *
 
 __all__ = ["catuo"]
 
@@ -16,23 +15,17 @@ class AutoEnterData:
     def initVar(self):
         pass
 
-    def single_component(self, data: list):
+    def singleComponent(self, data: list):
         click_image(self.pic_value, ["left", (50, 20)], confidence=0.7)
-        pg.typewrite(f"{data[0]}")
-        pg.press("tab")
-        pg.typewrite(f"{data[1]}")
-        pg.press("tab")
-        pg.typewrite(f"{data[2]}")
-        pg.press("tab")
-        pg.typewrite(f"{data[3]}")
-        pg.press("tab")
-        pg.typewrite(f"{data[4]}")
+        for i in range(len(data)):
+            pg.typewrite(f"{data[i]}")
+            pg.press("tab")
         click_image(self.pic_enter, confidence=0.7)
 
 
 def main():
     ato = AutoEnterData()
-    ato.single_component([1, 2, 3, 4, 5, 6])
+    ato.singleComponent([1, 2, 3, 4, 5, 6])
 
 
 if __name__ == "__main__":

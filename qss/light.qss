@@ -331,12 +331,12 @@ QTableView::item:hover {
 
 QTableView::item:selected {
 	background: #8BF;
-	color: #EEEEEF;
+	color: #000000;
 }
 
 QTableView::item:selected:active {
 	background: #59F;
-	color: #EEEEEF;
+	color: #272729;
 }
 
 QTableWidget QComboBox{
