@@ -5,7 +5,7 @@ from ui import *
 
 def main():
     app = QApplication([])
-    window = MainWindow()
+    window = startDlg()
     window.show()
     app.exec()
 

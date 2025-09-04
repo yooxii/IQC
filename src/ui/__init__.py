@@ -1,3 +1,3 @@
-from .mainWin import MainWindow
+from .startDlg import startDlg
 
-__all__ = ["MainWindow"]
+__all__ = ["startDlg"]

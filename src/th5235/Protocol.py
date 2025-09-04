@@ -47,3 +47,6 @@ def decode(data):
             break
 
     return test_results
+
+def test():
+    pass
