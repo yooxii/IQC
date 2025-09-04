@@ -1,6 +1,5 @@
 from template import *
-from th2837 import *
-
+from th2837 import cmds
 import pandas as pd
 
 from PySide6.QtWidgets import (
