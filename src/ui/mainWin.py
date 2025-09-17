@@ -20,8 +20,6 @@ from .comDlg import comDialog
 from .setsDlg import setsDialog
 
 
-
-
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
@@ -101,8 +99,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.setsdig.accepted.connect(self.setSettings)
 
-        # print("setsdig!!!")
-
     def setAlwaysTopWin(self, on_top: bool):
         """设置是否将主窗口一直置顶
 
@@ -178,10 +174,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.settings.value("reconn", False, type=bool)
         )
         self.always_top_win = self.settings.value("always_top_window", False, type=bool)
-        theme = self.settings.value("theme", self.tr("Light"), type=str)
-        if theme == self.tr("Light"):
+        theme = self.settings.value("theme", 0, type=int)
+        if theme == 0:
             self.isdarktheme = False
-        elif theme == self.tr("Dark"):
+        elif theme == 1:
             self.isdarktheme = True
         else:
             settings = QSettings(
@@ -270,7 +266,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.comStatusIcon = QLabel(
             pixmap=self.comStatusIconOff,
         )
-        self.comStatusText = QLabel(text=self.tr("status:"))
+        self.comStatusText = QLabel(text=self.tr("状态:"))
 
         comStausLayout.addWidget(self.comStatusText)
         comStausLayout.addWidget(self.comStatusIcon)
@@ -288,8 +284,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def comClose(self):
         mess = QMessageBox()
-        mess.setWindowTitle(self.tr("Warning of Misoperation"))
-        mess.setText(self.tr("Should the serial port connection be disconnected?"))
+        mess.setWindowTitle(self.tr("警告"))
+        mess.setText(self.tr("确定断开连接？"))
         mess.setStandardButtons(
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
@@ -373,11 +369,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def saveDatas(self):
         if self.tableOutput.rowCount() == 0:
-            raise IndexError(self.tr("No data can be saved!"))
+            raise IndexError(self.tr("没有数据，无法保存！"))
         import json
 
         savefile = QFileDialog.getSaveFileName(
-            self, self.tr("Save the data as"), filter="*.csv;;*.xlsx;;*.txt;;*.json"
+            self, self.tr("保存数据为"), filter="*.csv;;*.xlsx;;*.txt;;*.json"
         )
         savedata = []
         for row in range(self.tableOutput.rowCount()):
@@ -399,8 +395,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     ############################ 重置 ###########################
     def reset(self):
         mess = QMessageBox()
-        mess.setWindowTitle(self.tr("Reset"))
-        mess.setText(self.tr("Should all data be reset?"))
+        mess.setWindowTitle(self.tr("重置"))
+        mess.setText(self.tr("确定重置数据？"))
         mess.setStandardButtons(
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
@@ -422,12 +418,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """零件计数"""
         if self.counttest == 0:
             mess = QMessageBox()
-            mess.setWindowTitle(self.tr("Count of components"))
-            mess.setText(
-                self.tr(
-                    "The test count is zero, but the component count still increases?"
-                )
-            )
+            mess.setWindowTitle(self.tr("零件计数"))
+            mess.setText(self.tr("测试计数为零，仍然增加零件计数吗？"))
             mess.setStandardButtons(
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
             )

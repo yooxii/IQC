@@ -180,17 +180,17 @@
                <widget class="QComboBox" name="comb_theme">
                 <item>
                  <property name="text">
-                  <string>Light</string>
+                  <string>浅色</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>Dark</string>
+                  <string>黑色</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>Follow the system</string>
+                  <string>跟随系统</string>
                  </property>
                 </item>
                </widget>
@@ -322,7 +322,7 @@
                    </sizepolicy>
                   </property>
                   <property name="value">
-                   <number>30</number>
+                   <number>10</number>
                   </property>
                  </widget>
                 </item>

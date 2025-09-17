@@ -1,7 +1,7 @@
 from template import *
 
-from PySide6.QtWidgets import QDialog, QTreeWidgetItem, QFontDialog
-from PySide6.QtCore import QSettings
+from PySide6.QtWidgets import QDialog, QTreeWidgetItem, QFontDialog, QComboBox
+from PySide6.QtCore import QSettings, QLocale
 from PySide6.QtGui import QFont
 
 
@@ -12,6 +12,12 @@ class setsDialog(QDialog, Ui_MoreSetsDialog):
 
         self.settings = settings
         self.currentFont = None
+
+        # 添加语言选择框
+        self.comb_language = QComboBox(self)
+        self.comb_language.addItem("简体中文", "zh_CN")
+        self.comb_language.addItem("English", "en_US")
+        self.treeWidget.setItemWidget(self.treeWidget.topLevelItem(0), 0, self.comb_language)
 
         self.treeWidget.itemClicked.connect(self.setPageChange)
         self.tbtn_fontfamily.clicked.connect(self.getfont)
@@ -25,10 +31,17 @@ class setsDialog(QDialog, Ui_MoreSetsDialog):
         self.currentFont = QFont(fontfamily, pointSize=fontsize)
         self.edit_fontfamily.setText(fontfamily)
         self.spin_fontsize.setValue(fontsize)
-        theme = self.settings.value("theme", self.tr("Light"), type=str)
-        self.comb_theme.setCurrentText(theme)
+        theme = self.settings.value("theme", 0, type=int)
+        self.comb_theme.setCurrentIndex(theme)
         atw = self.settings.value("always_top_window", False, type=bool)
         self.check_topwin.setChecked(atw)
+        
+        # 读取语言设置
+        lang = self.settings.value("language", QLocale.system().name(), type=str)
+        lang_index = self.comb_language.findData(lang)
+        if lang_index >= 0:
+            self.comb_language.setCurrentIndex(lang_index)
+            
         self.settings.endGroup()
 
         self.settings.beginGroup("Data")
@@ -70,6 +83,8 @@ class setsDialog(QDialog, Ui_MoreSetsDialog):
         self.settings.setValue("font_size", self.spin_fontsize.value())
         self.settings.setValue("theme", self.comb_theme.currentText())
         self.settings.setValue("always_top_window", self.check_topwin.isChecked())
+        # 保存语言设置
+        self.settings.setValue("language", self.comb_language.currentData())
         self.settings.endGroup()
 
         self.settings.beginGroup("Data")

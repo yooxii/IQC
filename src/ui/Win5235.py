@@ -50,7 +50,7 @@ class MainWin(MainWindow):
         super(MainWin, self).__init__()
         self.comdig.combobaud.setCurrentText("38400")
         self.setWindowTitle("5235")
-        self.btnGetdatas.setStatusTip("从5235中获取数据")
+        self.btnGetdatas.setStatusTip(self.tr("从5235中获取数据"))
 
         self.sercom = self.comdig.comConnect()
 

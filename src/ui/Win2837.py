@@ -37,7 +37,7 @@ class DataThread(QThread):
             if self.stop:
                 break
             if times >= self.timeout_retries:
-                raise TimeoutError(self.tr("Data acquisition timeout!"))
+                raise TimeoutError(self.tr("数据获取超时！"))
             if times % 3 != 0:
                 print("TRIG:SOUR BUS")
                 self.sercom.write(b"TRIG:SOUR BUS\n")
@@ -101,7 +101,7 @@ class DataThread(QThread):
             dec = cmds.FETC.decode(data, cmds.FETC_TYPES[2])
             print(dec)
         else:
-            raise IndexError(f"{page} " + self.tr("Not the measurement interface!"))
+            raise IndexError(f"{page} " + self.tr("测试页面不存在！"))
         ret = {}
         if "type" in dec.keys():
             if dec["type"] == "Lx":

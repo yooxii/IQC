@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MoreSettingsjOKEAR.ui'
+## Form generated from reading UI file 'MoreSettingsvjkQUK.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.9.1
+## Created by: Qt User Interface Compiler version 6.9.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -224,7 +224,7 @@ class Ui_MoreSetsDialog(object):
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.spin_timeoutretry.sizePolicy().hasHeightForWidth())
         self.spin_timeoutretry.setSizePolicy(sizePolicy3)
-        self.spin_timeoutretry.setValue(30)
+        self.spin_timeoutretry.setValue(10)
 
         self.horizontalLayout_7.addWidget(self.spin_timeoutretry)
 
@@ -319,9 +319,9 @@ class Ui_MoreSetsDialog(object):
         self.tbtn_fontfamily.setText(QCoreApplication.translate("MoreSetsDialog", u"...", None))
         self.label_3.setText(QCoreApplication.translate("MoreSetsDialog", u"\u5927\u5c0f:", None))
         self.label_2.setText(QCoreApplication.translate("MoreSetsDialog", u"\u4e3b\u9898:", None))
-        self.comb_theme.setItemText(0, QCoreApplication.translate("MoreSetsDialog", u"Light", None))
-        self.comb_theme.setItemText(1, QCoreApplication.translate("MoreSetsDialog", u"Dark", None))
-        self.comb_theme.setItemText(2, QCoreApplication.translate("MoreSetsDialog", u"Follow the system", None))
+        self.comb_theme.setItemText(0, QCoreApplication.translate("MoreSetsDialog", u"\u6d45\u8272", None))
+        self.comb_theme.setItemText(1, QCoreApplication.translate("MoreSetsDialog", u"\u9ed1\u8272", None))
+        self.comb_theme.setItemText(2, QCoreApplication.translate("MoreSetsDialog", u"\u8ddf\u968f\u7cfb\u7edf", None))
 
         self.check_topwin.setText(QCoreApplication.translate("MoreSetsDialog", u"\u4e3b\u7a97\u53e3\u603b\u662f\u7f6e\u9876", None))
         self.groupBox_2.setTitle(QCoreApplication.translate("MoreSetsDialog", u"\u6570\u636e", None))
