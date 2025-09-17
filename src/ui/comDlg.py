@@ -36,6 +36,7 @@ class comDialog(QDialog, Ui_comDialog):
 
     def comConnect(self):
         self.sercom.close()
+        self.setPort()
         self.sercom.port = self.portname
         self.sercom.baudrate = self.portbaud
         if not self.sercom.is_open:

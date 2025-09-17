@@ -1,4 +1,4 @@
-def decode(data):
+def decode(data) -> list[dict]:
     """解析测试结果数据
 
     Args:
@@ -13,6 +13,7 @@ def decode(data):
     length = len(data)
     # 找到@的位置，为开头
     start = data.find("@")
+    print(start)
 
     # 按照格式要求解析数据
     test_results = []
@@ -28,25 +29,27 @@ def decode(data):
             # 解析每行测试数据，按照指定格式分割
             if len(line) >= 32 and line[0] == "@":
                 parsed_data = {
-                    "winding_info": line[1:11],  # 绕组编号及点位(10字节)
-                    "test_item": line[11:16],  # 测试项目(5字节)
-                    "value": line[16:23],  # 数值(7字节)
-                    "unit": line[23:25],  # 单位(2字节)
-                    "polarity": line[26],  # 极性(+/-)(1字节)
-                    "result": line[29:31],  # 判定结果(2字节)
+                    "winding_info": line[1:11].strip(),  # 绕组编号及点位(10字节)
+                    "test_item": line[11:16].strip(),  # 测试项目(5字节)
+                    "value": line[16:23].strip(),  # 数值(7字节)
+                    "unit": line[23:25].strip(),  # 单位(2字节)
+                    "polarity": line[26].strip(),  # 极性(+/-)(1字节)
+                    "result": line[29:31].strip(),  # 判定结果(2字节)
                 }
                 test_results.append(parsed_data)
 
             # 查找下一个@位置
             next_start = data.find("@", start + 1)
+            print(next_start)
             # 如果没有找到下一个@，或者到达结束符，则停止
-            if next_start == -1 or "\x0a" in data[start:]:
+            if next_start == -1:
                 break
             start = next_start
         else:
             break
 
     return test_results
+
 
 def test():
     pass
