@@ -302,12 +302,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.MainstatusBar.showMessage(err)
         self.btnGetdatas.setText(self.tr("获取数据"))
 
-    def updateDatas(self, datas_sorted):
+    def updateDatas(self, datas):
         self.btnGetdatas.setText(self.tr("获取数据"))
+
+        # 重新排序
+        datas_sorted = {}
+        datas_sorted["Ls"] = datas["Ls"]
+        datas_sorted["Q"] = datas["Q"]
+        datas_sorted["Rdc"] = datas["Rdc"]
+        datas_sorted["Ns"] = datas["Ns"]
+
         self.alldata.append(list(datas_sorted.values()))
 
         rowCount = self.tableOutput.rowCount()
         self.tableOutput.insertRow(rowCount)
+        print(datas_sorted)
         for i, v in enumerate(datas_sorted.values()):
             data = v * 10 ** self.pointoffest[i]
             item = QTableWidgetItem(str(data))

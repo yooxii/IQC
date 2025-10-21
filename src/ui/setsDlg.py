@@ -17,7 +17,9 @@ class setsDialog(QDialog, Ui_MoreSetsDialog):
         self.comb_language = QComboBox(self)
         self.comb_language.addItem("简体中文", "zh_CN")
         self.comb_language.addItem("English", "en_US")
-        self.treeWidget.setItemWidget(self.treeWidget.topLevelItem(0), 0, self.comb_language)
+        self.treeWidget.setItemWidget(
+            self.treeWidget.topLevelItem(0), 0, self.comb_language
+        )
 
         self.treeWidget.itemClicked.connect(self.setPageChange)
         self.tbtn_fontfamily.clicked.connect(self.getfont)
@@ -35,13 +37,13 @@ class setsDialog(QDialog, Ui_MoreSetsDialog):
         self.comb_theme.setCurrentIndex(theme)
         atw = self.settings.value("always_top_window", False, type=bool)
         self.check_topwin.setChecked(atw)
-        
+
         # 读取语言设置
         lang = self.settings.value("language", QLocale.system().name(), type=str)
         lang_index = self.comb_language.findData(lang)
         if lang_index >= 0:
             self.comb_language.setCurrentIndex(lang_index)
-            
+
         self.settings.endGroup()
 
         self.settings.beginGroup("Data")

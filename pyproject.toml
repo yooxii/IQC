@@ -1,5 +1,5 @@
 [project]
-name = "IQC-TH2837"
+name = "IQC"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -12,7 +12,7 @@ dependencies = [
     "pyautogui>=0.9.54",
     "pyinstaller>=6.15.0",
     "pyserial>=3.5",
-    "pyside6>=6.9.1",
+    "pyside6>=6.10.0",
 ]
 
 [[tool.uv.index]]

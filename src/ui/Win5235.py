@@ -30,14 +30,13 @@ class DataThread(QThread):
             if test_item in ["Ls", "Q", "Rdc", "Ns"]:
                 datas[test_item] = data["value"]
 
-        # 重新排序
         datas_sorted = {}
         datas_sorted["Ls"] = datas["Ls"]
         datas_sorted["Q"] = datas["Q"]
         datas_sorted["Rdc"] = datas["Rdc"]
         datas_sorted["Ns"] = datas["Ns"]
 
-        self.getDatasFinished.emit(datas_sorted)
+        self.getDatasFinished.emit(datas)
         self.messages.emit(self.tr("数据获取完成"))
 
     def terminate(self):

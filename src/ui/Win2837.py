@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from .mainWin import *
 from th2837 import cmds
 
@@ -25,19 +27,19 @@ class DataThread(QThread):
         page = re.sub(r"[a-z]+", "", page)
         print(page, end="")
         if page is None or page == "":
-            self.error.emit(self.tr("未连接到设备！"))
+            self.error.emit(self.tr(""))#未连接到设备！
             return
 
         datas = {}
         times = 0
         while len(datas) < 4:
             self.messages.emit(
-                self.tr("数据获取重试次数:") + f"{times}/{self.timeout_retries}"
-            )
+                self.tr("") + f"{times}/{self.timeout_retries}"
+            )#数据获取重试次数:
             if self.stop:
                 break
             if times >= self.timeout_retries:
-                raise TimeoutError(self.tr("数据获取超时！"))
+                raise TimeoutError(self.tr(""))#数据获取超时！
             if times % 3 != 0:
                 print("TRIG:SOUR BUS")
                 self.sercom.write(b"TRIG:SOUR BUS\n")
@@ -70,14 +72,9 @@ class DataThread(QThread):
             # self.MainstatusBar.showMessage(
             #     self.tr("数据获取重试次数:") + f"{times}/{self.timeout_retries}"
             # )
-        datas_sorted = {}
-        datas_sorted["Ls"] = datas["Ls"]
-        datas_sorted["Q"] = datas["Q"]
-        datas_sorted["Rdc"] = datas["Rdc"]
-        datas_sorted["Ns"] = datas["Ns"]
 
-        self.getDatasFinished.emit(datas_sorted)
-        self.messages.emit(self.tr("数据获取完成"))
+        self.getDatasFinished.emit(datas)
+        self.messages.emit(self.tr(""))#数据获取完成
 
     def dealData(self, page):
         data = self.sercom.readline()
@@ -101,7 +98,7 @@ class DataThread(QThread):
             dec = cmds.FETC.decode(data, cmds.FETC_TYPES[2])
             print(dec)
         else:
-            raise IndexError(f"{page} " + self.tr("测试页面不存在！"))
+            raise IndexError(f"{page} " + self.tr(""))#测试页面不存在！
         ret = {}
         if "type" in dec.keys():
             if dec["type"] == "Lx":
@@ -123,8 +120,8 @@ class MainWin(MainWindow):
         super(MainWin, self).__init__()
 
     def getDatas(self):
-        if self.btnGetdatas.text() == self.tr("获取数据"):
-            self.btnGetdatas.setText(self.tr("终止获取"))
+        if self.btnGetdatas.text() == self.tr(""):#获取数据
+            self.btnGetdatas.setText(self.tr(""))#终止获取
             self.dataThread = DataThread(self.sercom, self.timeout_retries)
             self.dataThread.getDatasFinished.connect(self.updateDatas)
             self.dataThread.messages.connect(
@@ -137,4 +134,4 @@ class MainWin(MainWindow):
                 return
             self.dataThread.terminate()
             self.dataThread.wait()
-            self.btnGetdatas.setText(self.tr("获取数据"))
+            self.btnGetdatas.setText(self.tr(""))#获取数据
